@@ -38,5 +38,6 @@ public class BooksEntity {
 
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "registration_date")
     private LocalDateTime registrationDate;
 }
