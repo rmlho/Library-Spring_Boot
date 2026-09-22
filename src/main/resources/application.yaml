@@ -12,13 +12,15 @@ spring:
       minimum-idle: 5
       idle-timeout: 30000
 
-  database-platform: org.hibernate.dialect.PostgreSQLDialect
-  hibernate:
-    ddl-auto: create-drop
-  show-sql: true
-  properties:
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      format_sql: true
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
 
 
 server:
