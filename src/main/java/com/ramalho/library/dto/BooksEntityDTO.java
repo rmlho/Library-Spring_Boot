@@ -17,14 +17,15 @@ public class BooksEntityDTO {
     private String name;
 
     @NotBlank
-    private String Gender;
+    private String gender;
 
     @NotNull
-    private AuthorEntity Author;
+    private AuthorEntity author;
 
     @NotBlank
     private String edition;
 
     @NotNull
-    private PublisherEntity Publusher;
+    private PublisherEntity publisher;
+
 }

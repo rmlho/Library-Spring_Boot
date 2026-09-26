@@ -23,18 +23,18 @@ public class BooksEntity {
     private String name;
 
     @Column(nullable = false)
-    private String Gender;
+    private String gender;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "Author", nullable = false)
-    private AuthorEntity Author;
+    private AuthorEntity author;
 
     @Column(nullable = false)
     private String edition;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "Publisher", nullable = false)
-    private PublisherEntity Publusher;
+    private PublisherEntity publisher;
 
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
