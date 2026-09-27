@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class AuthorService {
-    
+
     private final IAuthorRepository authorRepository;
 
     public AuthorEntity save(@Valid AuthorEntityDTO authorEntity) {
