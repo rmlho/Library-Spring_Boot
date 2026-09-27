@@ -25,14 +25,14 @@ public class BooksEntity {
     @Column(nullable = false)
     private String gender;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "Author", nullable = false)
     private AuthorEntity author;
 
     @Column(nullable = false)
     private String edition;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "Publisher", nullable = false)
     private PublisherEntity publisher;
 

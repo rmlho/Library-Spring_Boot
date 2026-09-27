@@ -1,11 +1,8 @@
 package com.ramalho.library.service;
 
 import com.ramalho.library.database.model.AuthorEntity;
-import com.ramalho.library.database.model.BooksEntity;
 import com.ramalho.library.database.repository.IAuthorRepository;
-import com.ramalho.library.database.repository.IBooksRepository;
 import com.ramalho.library.dto.AuthorEntityDTO;
-import com.ramalho.library.dto.BooksEntityDTO;
 import com.ramalho.library.exception.NotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
