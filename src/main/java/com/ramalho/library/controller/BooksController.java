@@ -30,4 +30,16 @@ public class BooksController {
     public List<BooksEntity> getAll() {
         return booksService.findAll();
     }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public BooksEntity update(@PathVariable Long id, @RequestBody BooksEntityDTO book) throws NotFoundException {
+        return booksService.save(book);
+    }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@PathVariable Long id) throws NotFoundException {
+       booksService.delete(id);
+    }
 }
