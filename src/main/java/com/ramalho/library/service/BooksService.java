@@ -1,6 +1,5 @@
 package com.ramalho.library.service;
 
-import ch.qos.logback.classic.spi.IThrowableProxy;
 import com.ramalho.library.database.model.AuthorEntity;
 import com.ramalho.library.database.model.BooksEntity;
 import com.ramalho.library.database.model.PublisherEntity;
@@ -12,11 +11,14 @@ import com.ramalho.library.exception.NotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class BooksService {
 
     private final IBooksRepository booksRepository;
@@ -46,7 +48,37 @@ public class BooksService {
         return booksRepository.findAll();
     }
 
+    @Transactional
+    public BooksEntity update(@Valid Long id, BooksEntityDTO booksEntity) throws NotFoundException {
+        AuthorEntity author = authorRepository.findById(booksEntity.getAuthor().getId())
+                .orElseThrow(() -> new NotFoundException("Author not found!"));
+
+        PublisherEntity publisher = publisherRepository.findById(booksEntity.getPublisher().getId())
+                .orElseThrow(() -> new NotFoundException("Publisher not found!"));
+
+        BooksEntity bookid = booksRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("id not found!"));
+
+        BooksEntity book;
 
 
+        book = BooksEntity.builder()
+                .id(id)
+                .name(booksEntity.getName())
+                .gender(booksEntity.getGender())
+                .author(author)
+                .edition(booksEntity.getEdition())
+                .publisher(publisher)
+                .build();
+
+
+        return booksRepository.save(book);
+    }
+
+    public void delete(Long id) throws NotFoundException {
+        BooksEntity book = booksRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Book not found"));
+        booksRepository.delete(book);
+    }
 
 }
