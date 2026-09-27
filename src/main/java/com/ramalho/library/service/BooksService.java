@@ -27,10 +27,10 @@ public class BooksService {
 
     public BooksEntity save(@Valid BooksEntityDTO booksEntityDTO) throws NotFoundException {
 
-        AuthorEntity author = authorRepository.findById(booksEntityDTO.getAuthor().getId())
+        AuthorEntity author = authorRepository.findById(booksEntityDTO.getAuthorid())
                 .orElseThrow(() -> new NotFoundException("Author not found!"));
 
-        PublisherEntity publisher = publisherRepository.findById(booksEntityDTO.getPublisher().getId())
+        PublisherEntity publisher = publisherRepository.findById(booksEntityDTO.getPublisherid())
                 .orElseThrow(() -> new NotFoundException("Publisher not found!"));
 
         BooksEntity book = BooksEntity.builder()
@@ -50,10 +50,10 @@ public class BooksService {
 
     @Transactional
     public BooksEntity update(Long id, @Valid BooksEntityDTO booksEntity) throws NotFoundException {
-        AuthorEntity author = authorRepository.findById(booksEntity.getAuthor().getId())
+        AuthorEntity author = authorRepository.findById(booksEntity.getAuthorid())
                 .orElseThrow(() -> new NotFoundException("Author not found!"));
 
-        PublisherEntity publisher = publisherRepository.findById(booksEntity.getPublisher().getId())
+        PublisherEntity publisher = publisherRepository.findById(booksEntity.getPublisherid())
                 .orElseThrow(() -> new NotFoundException("Publisher not found!"));
 
         booksRepository.findById(id)
