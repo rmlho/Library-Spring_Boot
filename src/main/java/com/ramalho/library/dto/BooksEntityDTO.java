@@ -20,12 +20,12 @@ public class BooksEntityDTO {
     private String gender;
 
     @NotNull
-    private AuthorEntity author;
+    private Long authorid;
 
     @NotBlank
     private String edition;
 
     @NotNull
-    private PublisherEntity publisher;
+    private Long publisherid;
 
 }
