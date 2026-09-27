@@ -49,14 +49,14 @@ public class BooksService {
     }
 
     @Transactional
-    public BooksEntity update(@Valid Long id, BooksEntityDTO booksEntity) throws NotFoundException {
+    public BooksEntity update(Long id, @Valid BooksEntityDTO booksEntity) throws NotFoundException {
         AuthorEntity author = authorRepository.findById(booksEntity.getAuthor().getId())
                 .orElseThrow(() -> new NotFoundException("Author not found!"));
 
         PublisherEntity publisher = publisherRepository.findById(booksEntity.getPublisher().getId())
                 .orElseThrow(() -> new NotFoundException("Publisher not found!"));
 
-        BooksEntity bookid = booksRepository.findById(id)
+        booksRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("id not found!"));
 
         BooksEntity book;
