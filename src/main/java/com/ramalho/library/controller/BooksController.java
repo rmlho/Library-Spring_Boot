@@ -31,14 +31,14 @@ public class BooksController {
         return booksService.findAll();
     }
 
-    @PutMapping
-    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public BooksEntity update(@PathVariable Long id, @RequestBody BooksEntityDTO book) throws NotFoundException {
-        return booksService.save(book);
+        return booksService.update(id, book);
     }
 
-    @DeleteMapping
-    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) throws NotFoundException {
        booksService.delete(id);
     }
