@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface IBooksRepository extends JpaRepository<BooksEntity, Long> {
-    List<BooksEntity> findByName(String name);
+    List<BooksEntity> findByNameContaining(String name);
 }
