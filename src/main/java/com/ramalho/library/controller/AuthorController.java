@@ -6,6 +6,7 @@ import com.ramalho.library.exception.NotFoundException;
 import com.ramalho.library.service.AuthorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,4 +42,18 @@ public class AuthorController {
     public void delete(@PathVariable Long id) throws NotFoundException {
         authorService.delete(id);
     }
+
+    @GetMapping("/{id} ")
+    public ResponseEntity<AuthorEntity> getId(@PathVariable Long id) {
+        return authorService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<AuthorEntity> getByName(@PathVariable String name) {
+        return authorService.findByName(name);
+    }
+
 }
