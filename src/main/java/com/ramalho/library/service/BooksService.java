@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -79,6 +80,15 @@ public class BooksService {
         BooksEntity book = booksRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Book not found"));
         booksRepository.delete(book);
+    }
+
+    public Optional<BooksEntity> findById(Long id) {
+        return booksRepository.findById(id);
+
+    }
+
+    public List<BooksEntity> finByName(String name) {
+        return booksRepository.findByName(name);
     }
 
 }
