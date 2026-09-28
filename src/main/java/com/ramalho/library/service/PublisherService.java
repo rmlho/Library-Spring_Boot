@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,5 +51,13 @@ public class PublisherService {
                 .orElseThrow(() -> new NotFoundException("Id not found!"));
 
         publisherRepository.delete(publisher);
+    }
+
+    public Optional<PublisherEntity> findById(Long id) {
+        return publisherRepository.findById(id);
+    }
+
+    public List<PublisherEntity> findByName(String name) {
+        return publisherRepository.findAllByNameContaining(name);
     }
 }
