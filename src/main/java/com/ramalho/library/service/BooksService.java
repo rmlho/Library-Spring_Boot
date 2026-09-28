@@ -91,4 +91,12 @@ public class BooksService {
         return booksRepository.findByNameContaining(name);
     }
 
+    public List<BooksEntity> finByGender(String gender) {
+        return booksRepository.findByGenderContainingIgnoreCase(gender);
+    }
+
+    public List<BooksEntity> orderByRegistrationDate() {
+        return booksRepository.findAllByOrderByRegistrationDateDesc();
+    }
+
 }

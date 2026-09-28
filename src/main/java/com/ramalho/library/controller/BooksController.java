@@ -58,4 +58,16 @@ public class BooksController {
         return booksService.finByName(name);
     }
 
+    @GetMapping("/{gender}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<BooksEntity> getByGender(@PathVariable String gender) {
+        return booksService.finByGender(gender);
+    }
+
+    @GetMapping("/registrationDate")
+    @ResponseStatus(HttpStatus.OK)
+    public List<BooksEntity> getAllByRegistrationDate() {
+        return booksService.orderByRegistrationDate();
+    }
+
 }
