@@ -7,6 +7,7 @@ import com.ramalho.library.exception.NotFoundException;
 import com.ramalho.library.service.PublisherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,5 +44,20 @@ public class PublisherController {
     public void delete(@PathVariable Long id) throws NotFoundException {
         publisherService.delete(id);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PublisherEntity> getById(@PathVariable Long id) {
+        return publisherService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PublisherEntity> getByName(@PathVariable String name) {
+        return publisherService.findByName(name);
+    }
+
+
 
 }
