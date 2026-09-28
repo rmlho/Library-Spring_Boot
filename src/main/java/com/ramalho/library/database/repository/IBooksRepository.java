@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface IBooksRepository extends JpaRepository<BooksEntity, Long> {
-    List<BooksEntity> findByNameContaining(String name);
+    List<BooksEntity> findAllByNameContaining(String name);
     List<BooksEntity> findByGenderContainingIgnoreCase(String gender);
     List<BooksEntity> findAllByOrderByRegistrationDateDesc();
 }
