@@ -6,6 +6,8 @@ import com.ramalho.library.dto.PublisherEntityDTO;
 import com.ramalho.library.exception.NotFoundException;
 import com.ramalho.library.service.PublisherService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,10 +29,10 @@ public class PublisherController {
         return publisherService.save(publisher);
     }
 
-    @GetMapping
+    @GetMapping("/page/{page}/size/{size}")
     @ResponseStatus(HttpStatus.OK)
-    public List<PublisherEntity> getAll() {
-        return publisherService.findAll();
+    public Page<PublisherEntity> getAll(@PathVariable Integer page, @PathVariable Integer size) {
+        return publisherService.findAll(PageRequest.of(page, size));
     }
 
     @PutMapping("/{id}")

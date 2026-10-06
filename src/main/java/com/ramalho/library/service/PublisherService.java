@@ -6,6 +6,8 @@ import com.ramalho.library.dto.PublisherEntityDTO;
 import com.ramalho.library.exception.NotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -29,8 +31,8 @@ public class PublisherService {
         return publisherRepository.save(publisher);
     }
 
-    public List<PublisherEntity> findAll() {
-        return publisherRepository.findAll();
+    public Page<PublisherEntity> findAll(Pageable pageable) {
+        return publisherRepository.findAll(pageable);
     }
 
     @Transactional
