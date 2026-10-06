@@ -46,14 +46,14 @@ public class AuthorController {
         authorService.delete(id);
     }
 
-    @GetMapping("/{id} ")
+    @GetMapping("/{id}")
     public ResponseEntity<AuthorEntity> getId(@PathVariable Long id) {
         return authorService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     @ResponseStatus(HttpStatus.OK)
     public List<AuthorEntity> getByName(@PathVariable String name) {
         return authorService.findByName(name);
