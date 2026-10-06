@@ -41,6 +41,7 @@ public class PublisherService {
                 .orElseThrow(() -> new NotFoundException("Id not found!"));
 
         PublisherEntity publisher = PublisherEntity.builder()
+                .id(id)
                 .name(publisherEntity.getName())
                 .location(publisherEntity.getLocation())
                 .build();
