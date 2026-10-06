@@ -28,9 +28,10 @@ public class BooksController {
         return booksService.save(book);
     }
 
-    @GetMapping("/page/{page}/size/{size}")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<BooksEntity> getAll(@PathVariable Integer page, @PathVariable Integer size) {
+    public Page<BooksEntity> getAll(@RequestParam(defaultValue = "0") Integer page,
+                                    @RequestParam(defaultValue = "10") Integer size) {
         return booksService.findAll(PageRequest.of(page, size));
     }
 
