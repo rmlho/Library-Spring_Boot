@@ -27,9 +27,10 @@ public class AuthorController {
         return authorService.save(author);
     }
 
-    @GetMapping("/page/{page}/size/{size}")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<AuthorEntity> getAll(@PathVariable Integer page, @PathVariable Integer size) {
+    public Page<AuthorEntity> getAll(@RequestParam(defaultValue = "0") Integer page,
+                                     @RequestParam(defaultValue = "10") Integer size) {
         return authorService.findAll(PageRequest.of(page, size));
     }
 
