@@ -41,6 +41,7 @@ public class AuthorService {
                 .orElseThrow(() -> new NotFoundException("id not found!"));
 
         AuthorEntity author = AuthorEntity.builder()
+                .id(id)
                 .name(authorEntity.getName())
                 .birthday(authorEntity.getBirthday())
                 .build();
