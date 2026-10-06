@@ -29,9 +29,10 @@ public class PublisherController {
         return publisherService.save(publisher);
     }
 
-    @GetMapping("/page/{page}/size/{size}")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<PublisherEntity> getAll(@PathVariable Integer page, @PathVariable Integer size) {
+    public Page<PublisherEntity> getAll(@RequestParam(defaultValue = "0") Integer page,
+                                        @RequestParam(defaultValue = "10") Integer size) {
         return publisherService.findAll(PageRequest.of(page, size));
     }
 
