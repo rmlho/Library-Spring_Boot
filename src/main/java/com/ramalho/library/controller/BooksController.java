@@ -54,13 +54,13 @@ public class BooksController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/nome/{name}")
     @ResponseStatus(HttpStatus.OK)
     public List<BooksEntity> getByName(@PathVariable String name) {
         return booksService.findByName(name);
     }
 
-    @GetMapping("/{gender}")
+    @GetMapping("/gender/{gender}")
     @ResponseStatus(HttpStatus.OK)
     public List<BooksEntity> getByGender(@PathVariable String gender) {
         return booksService.finByGender(gender);
