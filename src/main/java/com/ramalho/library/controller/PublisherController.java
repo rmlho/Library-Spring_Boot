@@ -55,7 +55,7 @@ public class PublisherController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     @ResponseStatus(HttpStatus.OK)
     public List<PublisherEntity> getByName(@PathVariable String name) {
         return publisherService.findByName(name);
