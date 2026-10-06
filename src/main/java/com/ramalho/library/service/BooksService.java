@@ -10,6 +10,8 @@ import com.ramalho.library.dto.BooksEntityDTO;
 import com.ramalho.library.exception.NotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -45,8 +47,8 @@ public class BooksService {
         return booksRepository.save(book);
     }
 
-    public List<BooksEntity> findAll() {
-        return booksRepository.findAll();
+    public Page<BooksEntity> findAll(Pageable pageable) {
+        return booksRepository.findAll(pageable);
     }
 
     @Transactional
@@ -87,7 +89,7 @@ public class BooksService {
 
     }
 
-    public List<BooksEntity> finByName(String name) {
+    public List<BooksEntity> findByName(String name) {
         return booksRepository.findAllByNameContaining(name);
     }
 

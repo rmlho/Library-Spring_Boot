@@ -5,13 +5,14 @@ import com.ramalho.library.dto.BooksEntityDTO;
 import com.ramalho.library.exception.NotFoundException;
 import com.ramalho.library.service.BooksService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/books")
@@ -27,10 +28,10 @@ public class BooksController {
         return booksService.save(book);
     }
 
-    @GetMapping
+    @GetMapping("/page/{page}/size/{size}")
     @ResponseStatus(HttpStatus.OK)
-    public List<BooksEntity> getAll() {
-        return booksService.findAll();
+    public Page<BooksEntity> getAll(@PathVariable Integer page, @PathVariable Integer size) {
+        return booksService.findAll(PageRequest.of(page, size));
     }
 
     @PutMapping("/{id}")
@@ -55,7 +56,7 @@ public class BooksController {
     @GetMapping("/{name}")
     @ResponseStatus(HttpStatus.OK)
     public List<BooksEntity> getByName(@PathVariable String name) {
-        return booksService.finByName(name);
+        return booksService.findByName(name);
     }
 
     @GetMapping("/{gender}")
