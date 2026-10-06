@@ -5,6 +5,8 @@ import com.ramalho.library.dto.AuthorEntityDTO;
 import com.ramalho.library.exception.NotFoundException;
 import com.ramalho.library.service.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,10 +27,10 @@ public class AuthorController {
         return authorService.save(author);
     }
 
-    @GetMapping
+    @GetMapping("/page/{page}/size/{size}")
     @ResponseStatus(HttpStatus.OK)
-    public List<AuthorEntity> getAll() {
-        return authorService.findAll();
+    public Page<AuthorEntity> getAll(@PathVariable Integer page, @PathVariable Integer size) {
+        return authorService.findAll(PageRequest.of(page, size));
     }
 
     @PutMapping("/{id}")
