@@ -5,6 +5,7 @@ import com.ramalho.library.database.repository.IPublisherRepository;
 import com.ramalho.library.dto.PublisherEntityDTO;
 import com.ramalho.library.exception.NotFoundException;
 import jakarta.validation.Valid;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
