@@ -9,6 +9,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -52,5 +58,26 @@ class PublisherServiceTest {
         assertEquals(1, publisher.getId());
         assertEquals("Test Publisher", publisher.getName());
 
+    }
+
+    @Test
+    void findAllPublishers() {
+        PublisherEntity publisherSave = createPublisher();
+
+        List<PublisherEntity> publisherEntities = List.of(publisherSave);
+
+        Page<PublisherEntity> pagebleEntities = new PageImpl<>(publisherEntities);
+
+        Mockito.when(publisherRepository.findAll(any(Pageable.class)))
+                .thenReturn(pagebleEntities);
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<PublisherEntity> page = publisherService.findAll(pageable);
+
+        assertEquals(1, page.getTotalElements());
+        assertEquals(1, page.getTotalPages());
+
+        assertEquals("Test Publisher", page.getContent().get(0).getName());
     }
 }
