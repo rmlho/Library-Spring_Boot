@@ -19,8 +19,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
@@ -103,4 +102,16 @@ class PublisherServiceTest {
         assertEquals(publisher.getName(), oldPublisher.getName());
         assertEquals("Test Publisher", publisher.getName());
     }
+
+    @Test
+    void update_NotFound_whenIdFound() {
+        PublisherEntity oldPublisher = createPublisher();
+
+        Mockito.when(publisherRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> publisherService.update(1L, createPublisherDTO()));
+    }
+
+
 }
