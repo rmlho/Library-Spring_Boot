@@ -113,5 +113,13 @@ class PublisherServiceTest {
         assertThrows(NotFoundException.class, () -> publisherService.update(1L, createPublisherDTO()));
     }
 
+    @Test
+    void update_NotFound_whenIdNotFound() {
+        PublisherEntity oldPublisher = createPublisher();
 
+        Mockito.when(publisherRepository.findById(99L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> publisherService.update(99L, createPublisherDTO()));
+    }
 }
