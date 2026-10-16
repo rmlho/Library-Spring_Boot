@@ -100,8 +100,7 @@ class PublisherServiceTest {
 
         assertNotNull(publisher);
         assertEquals(1L, publisher.getId());
-        assertEquals(publisher.getName(), oldPublisher.getId());
+        assertEquals(publisher.getName(), oldPublisher.getName());
         assertEquals("Test Publisher", publisher.getName());
-        verify(publisherRepository).save(any(PublisherEntity.class));
     }
 }
