@@ -3,22 +3,26 @@ package com.ramalho.library.service;
 import com.ramalho.library.database.model.PublisherEntity;
 import com.ramalho.library.database.repository.IPublisherRepository;
 import com.ramalho.library.dto.PublisherEntityDTO;
+import com.ramalho.library.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class PublisherServiceTest {
@@ -55,7 +59,7 @@ class PublisherServiceTest {
         PublisherEntity publisher = publisherService.save(publisherSaveDTO);
 
         assertNotNull(publisher);
-        assertEquals(1, publisher.getId());
+        assertEquals(1L, publisher.getId());
         assertEquals("Test Publisher", publisher.getName());
 
     }
@@ -79,5 +83,25 @@ class PublisherServiceTest {
         assertEquals(1, page.getTotalPages());
 
         assertEquals("Test Publisher", page.getContent().get(0).getName());
+    }
+
+    @Test
+    void updatePublisher() throws NotFoundException {
+        PublisherEntity oldPublisher = createPublisher();
+        PublisherEntityDTO newPublisherDTO = createPublisherDTO();
+
+        Mockito.when(publisherRepository.findById(1L)).
+                thenReturn(Optional.of(oldPublisher));
+
+        Mockito.when(publisherRepository.save(any(PublisherEntity.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        PublisherEntity publisher = publisherService.update(1L, newPublisherDTO);
+
+        assertNotNull(publisher);
+        assertEquals(1L, publisher.getId());
+        assertEquals(publisher.getName(), oldPublisher.getId());
+        assertEquals("Test Publisher", publisher.getName());
+        verify(publisherRepository).save(any(PublisherEntity.class));
     }
 }
