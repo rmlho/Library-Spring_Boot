@@ -124,7 +124,16 @@ class PublisherServiceTest {
     }
 
     @Test
-    void deletePublisher() {
+    void deletePublisher() throws NotFoundException {
+        PublisherEntity publisherSave = createPublisher();
+
+        Mockito.when(publisherRepository.findById(1L))
+                .thenReturn(Optional.of(publisherSave));
+
+        publisherService.delete(1L);
+
+        verify(publisherRepository, Mockito.times(1)).delete(publisherSave);
 
     }
+
 }
