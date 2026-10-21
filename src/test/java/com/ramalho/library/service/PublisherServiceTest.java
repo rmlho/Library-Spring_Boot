@@ -104,16 +104,6 @@ class PublisherServiceTest {
     }
 
     @Test
-    void update_NotFound_whenIdFound() {
-        PublisherEntityDTO oldPublisher = createPublisherDTO();
-
-        Mockito.when(publisherRepository.findById(1L))
-                .thenReturn(Optional.empty());
-
-        assertThrows(NotFoundException.class, () -> publisherService.update(1L, oldPublisher));
-    }
-
-    @Test
     void update_NotFound_whenIdNotFound() {
         PublisherEntityDTO oldPublisher = createPublisherDTO();
 
