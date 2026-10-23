@@ -129,8 +129,6 @@ class PublisherServiceTest {
 
     @Test
     void delete_NotFound_whenIdNotFound() {
-        PublisherEntity publisherSave = createPublisher();
-
         Mockito.when(publisherRepository.findById(1L))
                         .thenReturn(Optional.empty());
 
