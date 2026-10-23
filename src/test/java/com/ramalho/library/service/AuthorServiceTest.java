@@ -19,8 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
@@ -103,4 +102,13 @@ class AuthorServiceTest {
         assertEquals("Test Author", author.getName());
     }
 
+    @Test
+    void updateAuthor_whenIdNotFound() {
+        AuthorEntityDTO authorEntityDTO = createAuthorDTO();
+
+        Mockito.when(authorRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> authorService.update(1L, authorEntityDTO));
+    }
 }
