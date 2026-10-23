@@ -10,13 +10,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,8 +79,9 @@ class PublisherServiceTest {
 
         assertEquals(1, page.getTotalElements());
         assertEquals(1, page.getTotalPages());
-
-        assertEquals("Test Publisher", page.getContent().get(0).getName());
+        assertEquals(0, pageable.getPageNumber());
+        assertEquals(10, pageable.getPageSize());
+        assertEquals("Test Publisher", page.getContent().getFirst().getName());
     }
 
     @Test
