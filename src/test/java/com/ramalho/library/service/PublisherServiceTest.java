@@ -152,4 +152,17 @@ class PublisherServiceTest {
         assertEquals(publisherDB.getName(), publisherSearch.get().getName());
     }
 
+    @Test
+    void findByNameContaining_whenNameToExist() {
+        PublisherEntity publisherDB = createPublisher();
+
+        Mockito.when(publisherRepository.findAllByNameContaining("Test"))
+                .thenReturn(List.of(publisherDB));
+
+        List<PublisherEntity> publisherEntityList = publisherService.findByName("Test");
+
+        assertNotNull(publisherEntityList);
+        assertFalse(publisherEntityList.isEmpty());
+        assertEquals(publisherDB.getName(), publisherEntityList.getFirst().getName());
+    }
 }
