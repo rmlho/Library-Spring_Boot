@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -135,6 +136,20 @@ class PublisherServiceTest {
 
 
         assertThrows(NotFoundException.class, () -> publisherService.delete(1L));
+    }
+
+    @Test
+    void findByIdPublisher() {
+        PublisherEntity publisherDB = createPublisher();
+
+        Mockito.when(publisherRepository.findById(1L))
+                .thenReturn(Optional.of(publisherDB));
+
+        Optional<PublisherEntity> publisherSearch = publisherService.findById(1L);
+
+        assertTrue(publisherSearch.isPresent());
+        assertEquals(publisherDB.getId(), publisherSearch.get().getId());
+        assertEquals(publisherDB.getName(), publisherSearch.get().getName());
     }
 
 }
