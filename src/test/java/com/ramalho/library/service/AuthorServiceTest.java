@@ -123,4 +123,14 @@ class AuthorServiceTest {
 
         Mockito.verify(authorRepository, Mockito.times(1)).delete(authorEntity);
     }
+
+    @Test
+    void deleteAuthor_WhenIdNotFound() {
+        Mockito.when(authorRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> authorService.delete(1L));
+    }
+
+
 }
