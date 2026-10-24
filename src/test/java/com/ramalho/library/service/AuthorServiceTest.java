@@ -156,4 +156,18 @@ class AuthorServiceTest {
         assertNotNull(author);
         assertTrue(author.isEmpty());
     }
+
+    @Test
+    void findByName_whenNameFound() {
+        AuthorEntity authorEntity = createAuthor();
+
+        Mockito.when(authorRepository.findAllByNameContaining("Test Author"))
+                .thenReturn(List.of(authorEntity));
+
+        List<AuthorEntity> authorEntityList = authorService.findByName("Test Author");
+
+        assertNotNull(authorEntityList);
+        assertFalse(authorEntityList.isEmpty());
+        assertEquals(authorEntity.getName(), authorEntityList.getFirst().getName());
+    }
 }
