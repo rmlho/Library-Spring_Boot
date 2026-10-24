@@ -136,7 +136,7 @@ class PublisherServiceTest {
     }
 
     @Test
-    void findByIdPublisher() {
+    void findByIdPublisher_whenIdFound() {
         PublisherEntity publisherDB = createPublisher();
 
         Mockito.when(publisherRepository.findById(1L))
@@ -147,6 +147,17 @@ class PublisherServiceTest {
         assertTrue(publisherSearch.isPresent());
         assertEquals(publisherDB.getId(), publisherSearch.get().getId());
         assertEquals(publisherDB.getName(), publisherSearch.get().getName());
+    }
+
+    @Test
+    void findByIdPublisher_whenIdNotFound() {
+        Mockito.when(publisherRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        Optional<PublisherEntity> publisherEntityOptional = publisherService.findById(1L);
+
+        assertNotNull(publisherEntityOptional);
+        assertTrue(publisherEntityOptional.isEmpty());
     }
 
     @Test
