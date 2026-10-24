@@ -145,4 +145,15 @@ class AuthorServiceTest {
         assertEquals(1L, author.get().getId());
         assertEquals(authorEntity.getName(), author.get().getName());
     }
+
+    @Test
+    void findById_whenIdNotFound() {
+        Mockito.when(authorRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        Optional<AuthorEntity> author = authorService.findById(1L);
+
+        assertNotNull(author);
+        assertTrue(author.isEmpty());
+    }
 }
