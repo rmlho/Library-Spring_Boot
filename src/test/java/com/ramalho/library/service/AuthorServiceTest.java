@@ -132,5 +132,17 @@ class AuthorServiceTest {
         assertThrows(NotFoundException.class, () -> authorService.delete(1L));
     }
 
+    @Test
+    void findById_whenIdFound() {
+        AuthorEntity authorEntity = createAuthor();
 
+        Mockito.when(authorRepository.findById(1L))
+                .thenReturn(Optional.of(authorEntity));
+
+        Optional<AuthorEntity> author = authorService.findById(1L);
+
+        assertTrue(author.isPresent());
+        assertEquals(1L, author.get().getId());
+        assertEquals(authorEntity.getName(), author.get().getName());
+    }
 }
