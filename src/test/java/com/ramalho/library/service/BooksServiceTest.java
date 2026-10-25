@@ -165,7 +165,7 @@ class BooksServiceTest {
                         .birthday(LocalDate.of(2000, 02, 01))
                         .build()));
 
-        Mockito.when(publisherRepository.findById(1L))
+        Mockito.when(publisherRepository.findById(booksEntityDTO.getPublisherid()))
                 .thenReturn(Optional.of(PublisherEntity.builder()
                         .id(1L)
                         .name("Test Publisher")
@@ -309,5 +309,18 @@ class BooksServiceTest {
         assertNotNull(booksEntityList);
         assertTrue(booksEntityList.isEmpty());
         Mockito.verify(booksRepository, Mockito.times(1)).findAllByNameContaining("Test Book");
+    }
+
+    @Test
+    void findByGender_whenGenderFound() {
+        BooksEntity booksEntity = createBooks();
+
+        Mockito.when(booksRepository.findByGenderContainingIgnoreCase(booksEntity.getGender()))
+                .thenReturn(List.of(booksEntity));
+
+        List<BooksEntity> booksEntityList = booksService.findByGender("Test Gender");
+
+        assertNotNull(booksEntityList);
+        assertEquals("Test Gender", booksEntityList.getFirst().getGender());
     }
 }

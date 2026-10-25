@@ -93,7 +93,7 @@ public class BooksService {
         return booksRepository.findAllByNameContaining(name);
     }
 
-    public List<BooksEntity> finByGender(String gender) {
+    public List<BooksEntity> findByGender(String gender) {
         return booksRepository.findByGenderContainingIgnoreCase(gender);
     }
 

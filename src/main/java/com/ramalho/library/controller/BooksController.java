@@ -63,7 +63,7 @@ public class BooksController {
     @GetMapping("/gender/{gender}")
     @ResponseStatus(HttpStatus.OK)
     public List<BooksEntity> getByGender(@PathVariable String gender) {
-        return booksService.finByGender(gender);
+        return booksService.findByGender(gender);
     }
 
     @GetMapping("/registrationDate")
