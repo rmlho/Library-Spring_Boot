@@ -97,4 +97,15 @@ class BooksServiceTest {
         assertEquals(1L, books.getId());
         assertEquals("Test Book", books.getName());
     }
+
+    @Test
+    void sabeBooks_whenAuthorIdNotFound() {
+       BooksEntityDTO booksEntityDTO = createBooksDTO();
+
+       Mockito.when(authorRepository.findById(booksEntityDTO.getAuthorid()))
+               .thenReturn(Optional.empty());
+
+       assertThrows(NotFoundException.class, () -> booksService.save(booksEntityDTO));
+       Mockito.verify(booksRepository, Mockito.never()).save(any(BooksEntity.class));
+    }
 }
