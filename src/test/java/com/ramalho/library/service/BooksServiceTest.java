@@ -335,4 +335,17 @@ class BooksServiceTest {
         assertTrue(booksEntityList.isEmpty());
         Mockito.verify(booksRepository, Mockito.times(1)).findByGenderContainingIgnoreCase("Test Gender");
     }
+
+    @Test
+    void orderByRegistrationDateTest() {
+        BooksEntity booksEntity = createBooks();
+
+        Mockito.when(booksRepository.findAllByOrderByRegistrationDateDesc())
+                .thenReturn(List.of(booksEntity));
+
+        List<BooksEntity> booksEntityList = booksService.orderByRegistrationDate();
+
+        assertNotNull(booksEntity);
+        Mockito.verify(booksRepository, Mockito.times(1)).findAllByOrderByRegistrationDateDesc();
+    }
 }
