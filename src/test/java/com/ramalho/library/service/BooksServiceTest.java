@@ -215,4 +215,29 @@ class BooksServiceTest {
         Mockito.verify(booksRepository, Mockito.never()).save(any(BooksEntity.class));
 
     }
+
+    @Test
+    void updateBooks_whenIdBookNotFound() {
+        BooksEntityDTO booksEntityDTO = createBooksDTO();
+
+        Mockito.when(authorRepository.findById(booksEntityDTO.getAuthorid()))
+                .thenReturn(Optional.of(AuthorEntity.builder()
+                        .id(1L)
+                        .name("Test Author")
+                        .birthday(LocalDate.of(2000, 02, 01))
+                        .build()));
+
+        Mockito.when(publisherRepository.findById(booksEntityDTO.getPublisherid()))
+                .thenReturn(Optional.of(PublisherEntity.builder()
+                        .id(1L)
+                        .name("Test Publisher")
+                        .location("Test Location Publisher")
+                        .build()));
+
+        Mockito.when(booksRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> booksService.update(1L, booksEntityDTO));
+        Mockito.verify(booksRepository, Mockito.never()).save(any(BooksEntity.class));
+    }
 }
