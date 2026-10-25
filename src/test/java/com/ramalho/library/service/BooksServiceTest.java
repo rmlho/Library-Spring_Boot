@@ -273,4 +273,15 @@ class BooksServiceTest {
         assertNotNull(books);
         Mockito.verify(booksRepository, Mockito.times(1)).findById(1L);
     }
+
+    @Test
+    void findByIdBook_whenIdNotFound() {
+        Mockito.when(booksRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        Optional<BooksEntity> books = booksService.findById(1L);
+
+        assertNotNull(books);
+        assertTrue(books.isEmpty());
+    }
 }
