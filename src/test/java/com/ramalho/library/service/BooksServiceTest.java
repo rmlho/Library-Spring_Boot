@@ -14,9 +14,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -125,5 +130,26 @@ class BooksServiceTest {
 
         assertThrows(NotFoundException.class, () -> booksService.save(booksEntityDTO));
         Mockito.verify(booksRepository, Mockito.never()).save(any(BooksEntity.class));
+    }
+
+    @Test
+    void findAllBooks() {
+        BooksEntity booksEntity = createBooks();
+
+        List<BooksEntity> booksEntityList = List.of(booksEntity);
+        Page<BooksEntity> booksEntityPage = new PageImpl<>(booksEntityList);
+
+        Mockito.when(booksRepository.findAll(any(Pageable.class)))
+                .thenReturn(booksEntityPage);
+
+        Pageable page = PageRequest.of(0, 10);
+        Page<BooksEntity> pageBooks = booksService.findAll(page);
+
+        assertNotNull(pageBooks);
+        assertEquals(1, pageBooks.getTotalElements());
+        assertEquals(1, pageBooks.getTotalPages());
+        assertEquals("Test Book", pageBooks.getContent().getFirst().getName());
+        assertEquals(0, page.getPageNumber());
+        assertEquals(10, page.getPageSize());
     }
 }
