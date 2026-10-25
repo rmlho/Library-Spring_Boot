@@ -298,4 +298,16 @@ class BooksServiceTest {
         assertFalse(booksEntityList.isEmpty());
         assertEquals("Test Book", booksEntityList.getFirst().getName());
     }
+
+    @Test
+    void findByName_whenNameNotFound() {
+        Mockito.when(booksRepository.findAllByNameContaining("Test Book"))
+                .thenReturn(List.of());
+
+        List<BooksEntity> booksEntityList = booksService.findByName("Test Book");
+
+        assertNotNull(booksEntityList);
+        assertTrue(booksEntityList.isEmpty());
+        Mockito.verify(booksRepository, Mockito.times(1)).findAllByNameContaining("Test Book");
+    }
 }
