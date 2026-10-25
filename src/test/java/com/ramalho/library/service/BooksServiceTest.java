@@ -252,4 +252,12 @@ class BooksServiceTest {
 
         Mockito.verify(booksRepository, Mockito.times(1)).delete(any(BooksEntity.class));
     }
+
+    @Test
+    void deleteBook_whenIdNotFound() {
+        Mockito.when(booksRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> booksService.delete(1L));
+    }
 }
