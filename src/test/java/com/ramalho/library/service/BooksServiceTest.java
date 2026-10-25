@@ -323,4 +323,16 @@ class BooksServiceTest {
         assertNotNull(booksEntityList);
         assertEquals("Test Gender", booksEntityList.getFirst().getGender());
     }
+
+    @Test
+    void findByGender_whenGenderNotFound() {
+        Mockito.when(booksRepository.findByGenderContainingIgnoreCase("Test Gender"))
+                .thenReturn(List.of());
+
+        List<BooksEntity> booksEntityList = booksService.findByGender("Test Gender");
+
+        assertNotNull(booksEntityList);
+        assertTrue(booksEntityList.isEmpty());
+        Mockito.verify(booksRepository, Mockito.times(1)).findByGenderContainingIgnoreCase("Test Gender");
+    }
 }
