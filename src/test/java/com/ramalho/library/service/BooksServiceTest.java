@@ -152,4 +152,37 @@ class BooksServiceTest {
         assertEquals(0, page.getPageNumber());
         assertEquals(10, page.getPageSize());
     }
+
+    @Test
+    void updateBooks_whenIdsFound() throws NotFoundException {
+        BooksEntity booksEntity = createBooks();
+        BooksEntityDTO booksEntityDTO = createBooksDTO();
+
+        Mockito.when(authorRepository.findById(booksEntityDTO.getAuthorid()))
+                .thenReturn(Optional.of(AuthorEntity.builder()
+                        .id(1L)
+                        .name("Test Author")
+                        .birthday(LocalDate.of(2000, 02, 01))
+                        .build()));
+
+        Mockito.when(publisherRepository.findById(1L))
+                .thenReturn(Optional.of(PublisherEntity.builder()
+                        .id(1L)
+                        .name("Test Publisher")
+                        .location("Test Location Publisher")
+                        .build()));
+
+        Mockito.when(booksRepository.findById(booksEntity.getId()))
+                .thenReturn(Optional.of(booksEntity));
+
+        Mockito.when(booksRepository.save(any(BooksEntity.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        BooksEntity books = booksService.update(1L, booksEntityDTO);
+
+        assertNotNull(books);
+        assertEquals(1L, books.getId());
+        assertEquals(1L, books.getAuthor().getId());
+        assertEquals(1L, books.getPublisher().getId());
+    }
 }
