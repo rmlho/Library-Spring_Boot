@@ -185,4 +185,15 @@ class BooksServiceTest {
         assertEquals(1L, books.getAuthor().getId());
         assertEquals(1L, books.getPublisher().getId());
     }
+
+    @Test
+    void updateBooks_whenIdAuthorNotFound() {
+        BooksEntityDTO booksEntityDTO = createBooksDTO();
+
+        Mockito.when(authorRepository.findById(booksEntityDTO.getAuthorid()))
+                .thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> booksService.update(1L, booksEntityDTO));
+        Mockito.verify(booksRepository, Mockito.never()).save(any(BooksEntity.class));
+    }
 }
