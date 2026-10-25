@@ -240,4 +240,16 @@ class BooksServiceTest {
         assertThrows(NotFoundException.class, () -> booksService.update(1L, booksEntityDTO));
         Mockito.verify(booksRepository, Mockito.never()).save(any(BooksEntity.class));
     }
+
+    @Test
+    void deleteBook_whenIdFound() throws NotFoundException {
+        BooksEntity booksEntity = createBooks();
+
+        Mockito.when(booksRepository.findById(1L))
+                .thenReturn(Optional.of(booksEntity));
+
+        booksService.delete(1L);
+
+        Mockito.verify(booksRepository, Mockito.times(1)).delete(any(BooksEntity.class));
+    }
 }
