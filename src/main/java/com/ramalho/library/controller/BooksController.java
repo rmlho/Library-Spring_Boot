@@ -71,5 +71,4 @@ public class BooksController {
     public List<BooksEntity> getAllByRegistrationDate() {
         return booksService.orderByRegistrationDate();
     }
-
 }
