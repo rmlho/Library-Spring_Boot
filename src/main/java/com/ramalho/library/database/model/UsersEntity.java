@@ -38,12 +38,12 @@ public class UsersEntity implements UserDetails {
 
     @Override
     public @Nullable String getPassword() {
-        return email;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return password;
+        return email;
     }
 
     @Override
