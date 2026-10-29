@@ -21,6 +21,9 @@ spring:
       hibernate:
         format_sql: true
 
+  jwt:
+    expiration: ${JWT_EXPIRATION:600000} #10 minutes;
+    key: ${JWT_KEY}
 
 
 server:
