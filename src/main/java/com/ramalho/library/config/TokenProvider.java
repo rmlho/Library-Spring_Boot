@@ -12,10 +12,10 @@ import java.time.Instant;
 @Component
 public class TokenProvider {
 
-    @Value("${JWT_KEY}")
+    @Value("${JWT.KEY}")
     private String secret;
 
-    @Value("${JWT_EXPIRATION}")
+    @Value("${JWT.EXPIRATION}")
     private long expiration;
 
     public String generationToken(String email) {
