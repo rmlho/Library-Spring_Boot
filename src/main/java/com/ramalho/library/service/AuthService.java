@@ -15,6 +15,8 @@ public class AuthService implements UserDetailsService {
 
     private final IUsersRepository usersRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return usersRepository.findByEmail(username)
