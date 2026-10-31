@@ -2,10 +2,6 @@
 
 A RESTful library management API built with Java and Spring Boot. The system manages books, authors, and publishers with relational data integrity, centralized exception handling, and auto-generated API documentation.
 
-<p align="center">
-  <img src="./assets/SwaggerUI.png" width="600" alt="Test API Postman">
-</p>
-
 ## Features
 
 - Full CRUD operations for Books, Authors, and Publishers
@@ -95,7 +91,12 @@ Full API documentation is generated automatically with Springdoc OpenAPI and ava
 http://localhost:8081/swagger-ui.html
 ```
 
-<!-- IMAGE: Swagger UI expanded view of the books-controller endpoints -->
+<p align="center">
+  <img src="./assets/SwaggerUI.png" width="600" alt="Test API Postman">
+</p>
+
+
+
 
 ## Getting Started
 
@@ -161,7 +162,7 @@ Content-Type: application/json
 - [x] Input validation
 - [x] Pagination and sorting
 - [x] Swagger/OpenAPI documentation
-- [ ] Authentication and authorization with Spring Security (JWT)
+- [x] Authentication and authorization with Spring Security (JWT)
 - [ ] Containerization with Docker
 - [ ] Cloud deployment
 
