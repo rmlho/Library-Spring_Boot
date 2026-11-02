@@ -32,11 +32,17 @@ public class BooksService {
 
     public BooksEntity save(@Valid BooksEntityDTO booksEntityDTO) throws NotFoundException {
 
+        log.info("The process of saving the book begins!");
+
         AuthorEntity author = authorRepository.findById(booksEntityDTO.getAuthorid())
                 .orElseThrow(() -> new NotFoundException("Author not found!"));
 
+        log.info("Author id {} found.", booksEntityDTO.getAuthorid());
+
         PublisherEntity publisher = publisherRepository.findById(booksEntityDTO.getPublisherid())
                 .orElseThrow(() -> new NotFoundException("Publisher not found!"));
+
+        log.info("Publisher id {} found.", booksEntityDTO.getPublisherid());
 
         BooksEntity book = BooksEntity.builder()
                 .name(booksEntityDTO.getName())
@@ -46,6 +52,7 @@ public class BooksService {
                 .publisher(publisher)
                 .build();
 
+        log.info("Book {} successfully registered id: {}", book.getName(), book.getId());
         return booksRepository.save(book);
     }
 
