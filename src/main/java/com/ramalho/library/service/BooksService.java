@@ -54,8 +54,9 @@ public class BooksService {
                 .publisher(publisher)
                 .build();
 
-        log.info("Book {} successfully registered.", book.getName());
-        return booksRepository.save(book);
+        BooksEntity savedBook = booksRepository.save(book);
+        log.info("Book {} successfully registered.", savedBook.getName());
+        return savedBook;
     }
 
     public Page<BooksEntity> findAll(Pageable pageable) {
