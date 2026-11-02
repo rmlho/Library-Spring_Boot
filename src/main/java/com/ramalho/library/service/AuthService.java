@@ -6,6 +6,7 @@ import com.ramalho.library.database.repository.IUsersRepository;
 import com.ramalho.library.dto.UsersRequestDTO;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 @RequiredArgsConstructor
 @Validated
 @Builder
+@Slf4j
 public class AuthService implements UserDetailsService {
 
     private final IUsersRepository usersRepository;

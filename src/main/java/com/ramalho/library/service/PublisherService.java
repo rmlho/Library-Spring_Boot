@@ -7,6 +7,7 @@ import com.ramalho.library.exception.NotFoundException;
 import jakarta.validation.Valid;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Validated
+@Slf4j
 public class PublisherService {
 
     private final IPublisherRepository publisherRepository;
