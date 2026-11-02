@@ -2,10 +2,6 @@
 
 A RESTful library management API built with Java and Spring Boot. The system manages books, authors, and publishers with relational data integrity, centralized exception handling, and auto-generated API documentation.
 
-<p align="center">
-  <img src="./assets/SwaggerUI.png" width="600" alt="Test API Postman">
-</p>
-
 ## Features
 
 - Full CRUD operations for Books, Authors, and Publishers
@@ -29,6 +25,8 @@ A RESTful library management API built with Java and Spring Boot. The system man
 - Springdoc OpenAPI (Swagger UI)
 - Maven
 - Postman (manual testing)
+- Spring Security
+- JSON Web Tokens (JWT)
 
 ## Project Structure
 
@@ -95,7 +93,24 @@ Full API documentation is generated automatically with Springdoc OpenAPI and ava
 http://localhost:8081/swagger-ui.html
 ```
 
-<!-- IMAGE: Swagger UI expanded view of the books-controller endpoints -->
+<p align="center">
+  <img src="./assets/SwaggerUI.png" width="600" alt="Test API Postman">
+</p>
+
+## Security & Authentication
+
+The API is secured using **Spring Security** and **JSON Web Tokens (JWT)**, implementing a stateless authentication mechanism to protect the endpoints.
+
+- **Password Hashing**: User passwords are securely encrypted using **BCrypt** before being stored in the PostgreSQL database.
+- **Registration & Login**: Public endpoints (`/v1/auth/register` and `/v1/auth/login`) allow users to create an account and authenticate. By default, new users are assigned a standard role (e.g., `USER`) to prevent privilege escalation.
+- **Authorization**: Upon successful authentication, the API returns a JWT. This token must be included in the HTTP headers as a `Bearer` token for all subsequent requests to protected routes.
+- **Stateless Sessions**: The server does not store user sessions. Every request to a protected endpoint is independently validated via a custom `JwtAuthenticationFilter`.
+
+**Example: Accessing a protected route**
+```http
+GET /v1/books
+Authorization: Bearer <your_jwt_token_here>
+```
 
 ## Getting Started
 
@@ -161,7 +176,7 @@ Content-Type: application/json
 - [x] Input validation
 - [x] Pagination and sorting
 - [x] Swagger/OpenAPI documentation
-- [ ] Authentication and authorization with Spring Security (JWT)
+- [x] Authentication and authorization with Spring Security (JWT)
 - [ ] Containerization with Docker
 - [ ] Cloud deployment
 
