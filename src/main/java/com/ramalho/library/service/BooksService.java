@@ -60,7 +60,9 @@ public class BooksService {
     }
 
     public Page<BooksEntity> findAll(Pageable pageable) {
-        return booksRepository.findAll(pageable);
+        Page<BooksEntity> booksEntityPage = booksRepository.findAll(pageable);
+        log.info("Book search completed successfully");
+        return booksEntityPage;
     }
 
     @Transactional
