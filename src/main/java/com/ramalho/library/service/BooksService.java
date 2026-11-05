@@ -42,7 +42,7 @@ public class BooksService {
 
         PublisherEntity publisher = publisherRepository.findById(booksEntityDTO.getPublisherid())
                 .orElseThrow(() -> {
-                    log.warn("Publisher id {} not found", booksEntityDTO.getPublisherid());
+                    log.warn("Publisher id {} not found.", booksEntityDTO.getPublisherid());
                     return new NotFoundException("Publisher not found!");
                 });
 
@@ -61,20 +61,31 @@ public class BooksService {
 
     public Page<BooksEntity> findAll(Pageable pageable) {
         Page<BooksEntity> booksEntityPage = booksRepository.findAll(pageable);
-        log.info("Book search completed successfully");
+        log.info("Book search completed successfully.");
         return booksEntityPage;
     }
 
     @Transactional
     public BooksEntity update(Long id, @Valid BooksEntityDTO booksEntity) throws NotFoundException {
+        log.info("The process of update the book begins!");
+
         AuthorEntity author = authorRepository.findById(booksEntity.getAuthorid())
-                .orElseThrow(() -> new NotFoundException("Author not found!"));
+                .orElseThrow(() -> {
+                    log.warn("Author id not found in database.");
+                    return new NotFoundException("Author id not Found!");
+                        });
 
         PublisherEntity publisher = publisherRepository.findById(booksEntity.getPublisherid())
-                .orElseThrow(() -> new NotFoundException("Publisher not found!"));
+                .orElseThrow(() -> {
+                    log.warn("Publisher id not found in database.");
+                    return new NotFoundException("Publisher id not found!");
+                        });
 
         booksRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("id not found!"));
+                .orElseThrow(() -> {
+                    log.warn("Book id not found in database.");
+                    return new NotFoundException("Publisher id not found");
+                        });
 
         BooksEntity book;
 
@@ -89,30 +100,44 @@ public class BooksService {
                 .build();
 
 
-        return booksRepository.save(book);
+        BooksEntity bookUpdate = booksRepository.save(book);
+        log.info("Books update successfully.");
+        return bookUpdate;
     }
 
     public void delete(Long id) throws NotFoundException {
+        log.info("Search book by id.");
         BooksEntity book = booksRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Book not found"));
+                .orElseThrow(() -> {
+                    log.warn("Searching by ID did not return a book.");
+                    return new NotFoundException("Id not found!");
+                        });
+
         booksRepository.delete(book);
     }
 
     public Optional<BooksEntity> findById(Long id) {
-        return booksRepository.findById(id);
-
+        Optional<BooksEntity> book = booksRepository.findById(id);
+        log.info("The method's optional parameter returned something.");
+        return book;
     }
 
     public List<BooksEntity> findByName(String name) {
-        return booksRepository.findAllByNameContaining(name);
+        List<BooksEntity> booksEntityList = booksRepository.findAllByNameContaining(name);
+        log.info("Book successfully found by name.");
+        return booksEntityList;
     }
 
     public List<BooksEntity> findByGender(String gender) {
-        return booksRepository.findByGenderContainingIgnoreCase(gender);
+        List<BooksEntity> booksEntityList = booksRepository.findByGenderContainingIgnoreCase(gender);
+        log.info("Book successfully found by gender.");
+        return booksEntityList;
     }
 
     public List<BooksEntity> orderByRegistrationDate() {
-        return booksRepository.findAllByOrderByRegistrationDateDesc();
+        List<BooksEntity> booksEntityList = booksRepository.findAllByOrderByRegistrationDateDesc();
+        log.info("Book successfully found by order registration.");
+        return booksEntityList;
     }
 
 }
