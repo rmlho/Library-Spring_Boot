@@ -14,10 +14,10 @@ import java.time.Instant;
 @Slf4j
 public class TokenProvider {
 
-    @Value("${JWT.KEY}")
+    @Value("${jwt.key}")
     private String secret;
 
-    @Value("${JWT.EXPIRATION}")
+    @Value("${jwt.expiration}")
     private long expiration;
 
     public String generationToken(String email) {
