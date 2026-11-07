@@ -5,12 +5,10 @@ import com.ramalho.library.database.repository.IPublisherRepository;
 import com.ramalho.library.dto.PublisherEntityDTO;
 import com.ramalho.library.exception.NotFoundException;
 import jakarta.validation.Valid;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.core.support.RepositoryMethodInvocationListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -25,7 +23,6 @@ import java.util.Optional;
 public class PublisherService {
 
     private final IPublisherRepository publisherRepository;
-    private final RepositoryMethodInvocationListener repositoryMethodInvocationListener;
 
     public PublisherEntity save(@Valid PublisherEntityDTO publisherEntity) {
 
