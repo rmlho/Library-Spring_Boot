@@ -35,14 +35,14 @@ class AuthorServiceTest {
         return AuthorEntity.builder()
                 .id(1L)
                 .name("Test Author")
-                .birthday(LocalDate.ofEpochDay(01/03/2000))
+                .birthday(LocalDate.of(2003, 01, 01))
                 .build();
     }
 
     private AuthorEntityDTO createAuthorDTO() {
         return AuthorEntityDTO.builder()
                 .name("Test Author")
-                .birthday(LocalDate.ofEpochDay(01/03/2000))
+                .birthday(LocalDate.of(2003, 01, 01))
                 .build();
     }
 
