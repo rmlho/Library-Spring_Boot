@@ -34,7 +34,7 @@ class IAuthorRepositoryTest {
     }
 
     @Test
-    @DisplayName("Should get author successfully database.")
+    @DisplayName("Should get author name successfully database.")
     void findAllByNameContaining() {
 
         createAuthor("Machado de Assis", LocalDate.of(2001, 01, 01));
@@ -47,7 +47,7 @@ class IAuthorRepositoryTest {
     }
 
     @Test
-    @DisplayName("Should get author is empty database.")
+    @DisplayName("Should get author name is empty database.")
     void findAllByNameContainingIsEmpty() {
 
         createAuthor("Machado de Assis", LocalDate.of(2001, 01, 01));
