@@ -6,6 +6,7 @@ import com.ramalho.library.dto.PublisherEntityDTO;
 import com.ramalho.library.exception.NotFoundException;
 import com.ramalho.library.service.PublisherService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/v1/publisher")
 @Validated
 @RequiredArgsConstructor
+@Slf4j
 public class PublisherController {
 
     private final PublisherService publisherService;
@@ -26,6 +28,7 @@ public class PublisherController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PublisherEntity create(@RequestBody PublisherEntityDTO publisher) {
+        log.info("Request to create publisher.");
         return publisherService.save(publisher);
     }
 
@@ -33,23 +36,27 @@ public class PublisherController {
     @ResponseStatus(HttpStatus.OK)
     public Page<PublisherEntity> getAll(@RequestParam(defaultValue = "0") Integer page,
                                         @RequestParam(defaultValue = "10") Integer size) {
+        log.info("Request to find all publishers.");
         return publisherService.findAll(PageRequest.of(page, size));
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public PublisherEntity update(@PathVariable Long id, @RequestBody PublisherEntityDTO publisher) throws NotFoundException {
+        log.info("Request to update publisher.");
         return publisherService.update(id, publisher);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) throws NotFoundException {
+        log.info("Request to delete publisher.");
         publisherService.delete(id);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PublisherEntity> getById(@PathVariable Long id) {
+        log.info("Request to get by id publisher.");
         return publisherService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -58,9 +65,7 @@ public class PublisherController {
     @GetMapping("/name/{name}")
     @ResponseStatus(HttpStatus.OK)
     public List<PublisherEntity> getByName(@PathVariable String name) {
+        log.info("Request to get by name publisher.");
         return publisherService.findByName(name);
     }
-
-
-
 }
