@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,7 @@ import java.security.Security;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
@@ -34,9 +36,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (token != null) {
             var login = tokenProvider.validateToken(token);
 
+            log.info("Token successfully validated for user: {}", login);
             if (!login.isEmpty()) {
                 UserDetails user = usersRepository.findByEmail(login)
-                        .orElseThrow(() -> new RuntimeException("User not found in the token"));
+                        .orElseThrow(() -> {
+                            log.warn("User not found for this token in database.");
+                            return new RuntimeException("User not found in the token.");
+                        });
 
                 var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -49,7 +55,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String recoverToken(HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null) return null;
+        if (authHeader == null) {
+            log.debug("Authorization header is missing in the request");
+            return null; }
 
         return authHeader.replace("Bearer ", "");
     }
