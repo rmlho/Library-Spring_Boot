@@ -1,0 +1,46 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/db_library
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_KEY: ${JWT_KEY}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - public_network
+      - private_network
+
+  database:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: db_library
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - private_network
+
+volumes:
+  postgres_data:
+
+networks:
+  public_network:
+    driver: bridge
+  private_network:
+    driver: bridge
