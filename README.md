@@ -150,6 +150,64 @@ mvn spring-boot:run
 
 5. The API will be available at `http://localhost:8081`, and the interactive documentation at `http://localhost:8081/swagger-ui.html`.
 
+## Docker
+
+The project includes a `Dockerfile` and a Docker Compose configuration that starts the API and PostgreSQL. Before starting the containers, create a `.env` file in the project root:
+
+```env
+DB_USERNAME=library_user
+DB_PASSWORD=change_this_password
+JWT_KEY=replace_with_a_long_random_secret
+JWT_EXPIRATION=Time_in_milliseconds
+```
+
+Start the application and database:
+
+```bash
+docker compose up --build -d
+```
+
+The API is available at `http://localhost:8081`; Swagger UI is at `http://localhost:8081/swagger-ui.html`. PostgreSQL is exposed on host port `5433` (the API connects to it internally on port `5432`). To view the container logs or stop the services:
+
+```bash
+docker compose logs -f app
+docker compose down
+```
+
+## Using the API
+
+The API uses JWT authentication. Register an account, then log in to receive a token (replace the example email and password with your own; passwords must be at least 8 characters):
+
+```bash
+curl -X POST http://localhost:8081/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"reader@example.com","password":"password123"}'
+
+curl -X POST http://localhost:8081/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"reader@example.com","password":"password123"}'
+```
+
+Use the token returned by the login request as a Bearer token for protected endpoints. For example, list books or create one, or use the Postman for requests HTTP:
+
+```bash
+curl http://localhost:8081/v1/books \
+  -H "Authorization: Bearer <your_jwt_token>"
+
+curl -X POST http://localhost:8081/v1/books \
+  -H "Authorization: Bearer <your_jwt_token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "The Shining",
+    "gender": "Horror",
+    "authorId": 9,
+    "edition": "Anchor Books Tie-In Edition",
+    "publisherId": 4
+  }'
+```
+
+The books endpoint also supports pagination, for example `GET /v1/books?page=0&size=10`. See Swagger UI for the complete endpoints and request formats for books, authors, and publishers.
+
 ## Usage Example
 
 
@@ -177,7 +235,7 @@ Content-Type: application/json
 - [x] Pagination and sorting
 - [x] Swagger/OpenAPI documentation
 - [x] Authentication and authorization with Spring Security (JWT)
-- [ ] Containerization with Docker
+- [x] Containerization with Docker
 - [ ] Cloud deployment
 
 ## Author
