@@ -8,3 +8,6 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
+
+jwt:
+  key: "T%9z@Lq!2X$vB5^K8#mC3&yR6*wF1(xJ0-aH4_gU7+eD2=iS9[oV5]jA1{cM6}lY8|bP3>Wn9<Qk2,Ti7.fE4/tZ8?hG1;rO6:uD5Vp!3Kd&9Lq^2Xb#8Mn*5Cz@7Ry$1Fw(6Jt+gA4-hU2=jS7_eV9[oM1]cI6{lY8}xP3>WbN9<Qk2,Ti7.fE4/zZ8?aG1;rO6:uD5|Qp#1Kd%9Lq^2Xb&8Mn*5Cz@7Ry$1Fw(6Jt+gA4-hU2=jS7_eV9[oM1]cI6{lY8}xP3>WbN9<Qk2,Ti7.fE4/zZ8?aG1;rO6:uD5|Yx!5Vb&7Nq^3Wc#9Lp*4Bz@6Sx$2Ev(8Iu+fB3-kA@2"
