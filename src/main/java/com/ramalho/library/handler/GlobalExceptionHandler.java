@@ -1,6 +1,7 @@
 package com.ramalho.library.handler;
 
 import com.ramalho.library.exception.BadRequestException;
+import com.ramalho.library.exception.ConflictException;
 import com.ramalho.library.exception.ErroResponse;
 import com.ramalho.library.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -39,5 +40,15 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroResponse);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErroResponse> conflictException(Exception e) {
+        ErroResponse erroResponse = ErroResponse.builder()
+                .message(e.getMessage())
+                .status(HttpStatus.CONFLICT.value())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(erroResponse);
     }
 }
