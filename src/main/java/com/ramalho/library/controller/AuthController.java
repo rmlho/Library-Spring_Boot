@@ -1,7 +1,6 @@
 package com.ramalho.library.controller;
 
 import com.ramalho.library.config.TokenProvider;
-import com.ramalho.library.database.model.UsersEntity;
 import com.ramalho.library.dto.UsersRequestDTO;
 import com.ramalho.library.service.AuthService;
 import jakarta.validation.Valid;
