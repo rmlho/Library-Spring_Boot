@@ -1,7 +1,5 @@
 package com.ramalho.library.dto;
 
-import com.ramalho.library.database.model.AuthorEntity;
-import com.ramalho.library.database.model.PublisherEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
