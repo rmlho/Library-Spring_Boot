@@ -4,6 +4,7 @@ import com.ramalho.library.database.model.AuthorEntity;
 import com.ramalho.library.database.repository.IAuthorRepository;
 import com.ramalho.library.dto.AuthorEntityDTO;
 import com.ramalho.library.exception.BadRequestException;
+import com.ramalho.library.exception.ConflictException;
 import com.ramalho.library.exception.NotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -28,6 +30,12 @@ public class AuthorService {
 
     public AuthorEntity save(@Valid AuthorEntityDTO authorEntity) {
         log.info("The process of saving the author begins!");
+
+        String authorName = authorEntity.getName().trim();
+        if (authorRepository.existsByNameIgnoreCase(authorName)) {
+            log.warn("Author name already exists: {}", authorName);
+            throw new ConflictException("Author already registered in the database!");
+        }
 
         if (authorEntity.getBirthday().isBefore(LocalDate.now())) {
             log.warn("The date of birth is invalid.");
