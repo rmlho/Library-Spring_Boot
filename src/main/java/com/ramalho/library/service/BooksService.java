@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -36,6 +35,12 @@ public class BooksService {
 
         log.info("The process of saving the book begins!");
 
+        String bookName = booksEntityDTO.getName().trim();
+        if (booksRepository.existsByNameIgnoreCase(bookName)) {
+            log.warn("Book title already exists: {}", bookName);
+            throw new ConflictException("Book already registered in the database!");
+        }
+
         AuthorEntity author = authorRepository.findById(booksEntityDTO.getAuthorid())
                 .orElseThrow(() -> {
                     log.warn("Author id {} not found.", booksEntityDTO.getAuthorid());
@@ -48,13 +53,8 @@ public class BooksService {
                     return new NotFoundException("Publisher not found!");
                 });
 
-        if (Objects.equals(booksEntityDTO.getName(), booksRepository.findByName(booksEntityDTO.getName()))) {
-            log.warn("Existing book titles.");
-            throw new ConflictException("Book already registered in the database!");
-        }
-
         BooksEntity book = BooksEntity.builder()
-                .name(booksEntityDTO.getName())
+                .name(bookName)
                 .gender(booksEntityDTO.getGender())
                 .author(author)
                 .edition(booksEntityDTO.getEdition())
