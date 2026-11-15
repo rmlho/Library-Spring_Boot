@@ -3,6 +3,7 @@ package com.ramalho.library.service;
 import com.ramalho.library.database.model.PublisherEntity;
 import com.ramalho.library.database.repository.IPublisherRepository;
 import com.ramalho.library.dto.PublisherEntityDTO;
+import com.ramalho.library.exception.ConflictException;
 import com.ramalho.library.exception.NotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,12 @@ public class PublisherService {
     public PublisherEntity save(@Valid PublisherEntityDTO publisherEntity) {
 
         log.info("The process of saving the publisher begins!");
+
+        String publisherName = publisherEntity.getName().trim();
+        if (publisherRepository.existsByNameIgnoreCase(publisherName)) {
+            log.warn("Publisher name already exists: {}", publisherName);
+            throw new ConflictException("Publisher already registered in the database!");
+        }
 
         PublisherEntity publisher = PublisherEntity.builder()
                 .name(publisherEntity.getName())
