@@ -7,6 +7,7 @@ import com.ramalho.library.database.repository.IAuthorRepository;
 import com.ramalho.library.database.repository.IBooksRepository;
 import com.ramalho.library.database.repository.IPublisherRepository;
 import com.ramalho.library.dto.BooksEntityDTO;
+import com.ramalho.library.exception.ConflictException;
 import com.ramalho.library.exception.NotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -45,6 +47,11 @@ public class BooksService {
                     log.warn("Publisher id {} not found.", booksEntityDTO.getPublisherid());
                     return new NotFoundException("Publisher not found!");
                 });
+
+        if (Objects.equals(booksEntityDTO.getName(), booksRepository.findByName(booksEntityDTO.getName()))) {
+            log.warn("Existing book titles.");
+            throw new ConflictException("Book already registered in the database!");
+        }
 
         BooksEntity book = BooksEntity.builder()
                 .name(booksEntityDTO.getName())
