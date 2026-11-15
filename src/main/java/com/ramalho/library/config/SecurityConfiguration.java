@@ -53,6 +53,30 @@ public class SecurityConfiguration {
                         .anyRequest().hasAnyRole("LIBRARY", "ADMIN")
                 )
 
+                .exceptionHandling(handling -> handling
+                        .authenticationEntryPoint((request, response, exception) -> {
+                            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.setCharacterEncoding("UTF-8");
+
+                            objectMapper.writeValue(response.getOutputStream(),
+                                    ErroResponse.builder()
+                                            .message("Authentication Required")
+                                            .status(HttpStatus.UNAUTHORIZED.value())
+                                            .build());
+                        })
+                        .accessDeniedHandler((request, response, exception) -> {
+                            response.setStatus(HttpStatus.FORBIDDEN.value());
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.setCharacterEncoding("UTF-8");
+
+                            objectMapper.writeValue(response.getOutputStream(),
+                                    ErroResponse.builder()
+                                            .message("Access Denied")
+                                            .status(HttpStatus.FORBIDDEN.value())
+                                            .build());
+                        })
+                )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
