@@ -4,6 +4,7 @@ import com.ramalho.library.database.model.EnumRoles;
 import com.ramalho.library.database.model.UsersEntity;
 import com.ramalho.library.database.repository.IUsersRepository;
 import com.ramalho.library.dto.UsersRequestDTO;
+import com.ramalho.library.exception.ConflictException;
 import com.ramalho.library.exception.NotFoundException;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class AuthService implements UserDetailsService {
 
         if (usersRepository.findByEmail(requestDTO.getEmail()).isPresent()) {
             log.warn("Email of user currently in use.");
-            throw new RuntimeException("Email currently in use!");
+            throw new ConflictException("Email currently in use!");
         }
 
         UsersEntity usersEntity = UsersEntity.builder()
