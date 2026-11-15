@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface IPublisherRepository extends JpaRepository<PublisherEntity, Long> {
     List<PublisherEntity> findAllByNameContaining(String name);
+    boolean existsByNameIgnoreCase(String name);
 }

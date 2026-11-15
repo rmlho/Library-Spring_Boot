@@ -37,7 +37,7 @@ public class AuthorService {
             throw new ConflictException("Author already registered in the database!");
         }
 
-        if (authorEntity.getBirthday().isBefore(LocalDate.now())) {
+        if (authorEntity.getBirthday().isAfter(LocalDate.now())) {
             log.warn("The date of birth is invalid.");
             throw new BadRequestException("The date of birth is invalid!");
         }
@@ -70,7 +70,7 @@ public class AuthorService {
                     return new NotFoundException("Author id not found!");
                         });
 
-        if (authorEntity.getBirthday().isBefore(LocalDate.now())) {
+        if (authorEntity.getBirthday().isAfter(LocalDate.now())) {
             log.warn("The date of birth is invalid.");
             throw new BadRequestException("The date of birth is invalid!");
         }
