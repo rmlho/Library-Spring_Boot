@@ -3,6 +3,7 @@ package com.ramalho.library.service;
 import com.ramalho.library.database.model.AuthorEntity;
 import com.ramalho.library.database.repository.IAuthorRepository;
 import com.ramalho.library.dto.AuthorEntityDTO;
+import com.ramalho.library.exception.BadRequestException;
 import com.ramalho.library.exception.NotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +28,11 @@ public class AuthorService {
 
     public AuthorEntity save(@Valid AuthorEntityDTO authorEntity) {
         log.info("The process of saving the author begins!");
+
+        if (authorEntity.getBirthday().isBefore(LocalDate.now())) {
+            log.warn("The date of birth is invalid.");
+            throw new BadRequestException("The date of birth is invalid!");
+        }
 
         AuthorEntity author = AuthorEntity.builder()
                 .name(authorEntity.getName())
@@ -54,6 +61,11 @@ public class AuthorService {
                     log.warn("Author id not found in database. for update");
                     return new NotFoundException("Author id not found!");
                         });
+
+        if (authorEntity.getBirthday().isBefore(LocalDate.now())) {
+            log.warn("The date of birth is invalid.");
+            throw new BadRequestException("The date of birth is invalid!");
+        }
 
         AuthorEntity author = AuthorEntity.builder()
                 .id(id)
