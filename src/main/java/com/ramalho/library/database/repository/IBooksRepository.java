@@ -12,5 +12,5 @@ public interface IBooksRepository extends JpaRepository<BooksEntity, Long> {
     List<BooksEntity> findByGenderContainingIgnoreCase(String gender);
     List<BooksEntity> findAllByOrderByRegistrationDateDesc();
 
-    boolean existsByNameIgnoreCase(String name);
+    boolean existsByNameIgnoreCaseAndEditionIgnoreCase(String name, String edition);
 }

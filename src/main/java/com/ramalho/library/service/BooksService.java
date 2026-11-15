@@ -36,8 +36,9 @@ public class BooksService {
         log.info("The process of saving the book begins!");
 
         String bookName = booksEntityDTO.getName().trim();
-        if (booksRepository.existsByNameIgnoreCase(bookName)) {
-            log.warn("Book title already exists: {}", bookName);
+        String edition = booksEntityDTO.getEdition().trim();
+        if (booksRepository.existsByNameIgnoreCaseAndEditionIgnoreCase(bookName, edition)) {
+            log.warn("Book title and edition already exist: {} ({})", bookName, edition);
             throw new ConflictException("Book already registered in the database!");
         }
 
@@ -57,7 +58,7 @@ public class BooksService {
                 .name(bookName)
                 .gender(booksEntityDTO.getGender())
                 .author(author)
-                .edition(booksEntityDTO.getEdition())
+                .edition(edition)
                 .publisher(publisher)
                 .build();
 
