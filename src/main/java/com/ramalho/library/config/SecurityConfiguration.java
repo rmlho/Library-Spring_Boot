@@ -41,7 +41,16 @@ public class SecurityConfiguration {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.POST, "/v1/books")
+                        .hasAnyRole("LIBRARY", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/v1/books", "/v1/books/**")
+                        .hasAnyRole("LIBRARY", "ADMIN", "READER")
+                        .requestMatchers(
+                                "/v1/author", "/v1/author/**",
+                                "/v1/publisher", "/v1/publisher/**"
+                        )
+                        .hasAnyRole("LIBRARY", "ADMIN")
+                        .anyRequest().hasAnyRole("LIBRARY", "ADMIN")
                 )
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
