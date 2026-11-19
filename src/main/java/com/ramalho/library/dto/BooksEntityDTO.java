@@ -2,6 +2,7 @@ package com.ramalho.library.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 @Getter
@@ -16,6 +17,10 @@ public class BooksEntityDTO {
 
     @NotBlank
     private String gender;
+
+    @NotNull
+    @PositiveOrZero
+    private Integer quantity;
 
     @NotNull
     private Long authorid;
