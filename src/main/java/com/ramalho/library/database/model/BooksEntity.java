@@ -25,6 +25,9 @@ public class BooksEntity {
     @Column(nullable = false)
     private String gender;
 
+    @Column(nullable = false)
+    private Integer quantity;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "Author", nullable = false)
     private AuthorEntity author;
