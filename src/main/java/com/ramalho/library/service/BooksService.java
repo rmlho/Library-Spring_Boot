@@ -7,6 +7,7 @@ import com.ramalho.library.database.repository.IAuthorRepository;
 import com.ramalho.library.database.repository.IBooksRepository;
 import com.ramalho.library.database.repository.IPublisherRepository;
 import com.ramalho.library.dto.BooksEntityDTO;
+import com.ramalho.library.dto.BooksUpdateQuantDTO;
 import com.ramalho.library.exception.ConflictException;
 import com.ramalho.library.exception.NotFoundException;
 import jakarta.validation.Valid;
@@ -57,6 +58,7 @@ public class BooksService {
         BooksEntity book = BooksEntity.builder()
                 .name(bookName)
                 .gender(booksEntityDTO.getGender())
+                .quantity(booksEntityDTO.getQuantity())
                 .author(author)
                 .edition(edition)
                 .publisher(publisher)
@@ -92,7 +94,7 @@ public class BooksService {
         booksRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Book id not found in database.");
-                    return new NotFoundException("Publisher id not found");
+                    return new NotFoundException("Book id not found");
                         });
 
         BooksEntity book;
@@ -102,6 +104,7 @@ public class BooksService {
                 .id(id)
                 .name(booksEntity.getName())
                 .gender(booksEntity.getGender())
+                .quantity(booksEntity.getQuantity())
                 .author(author)
                 .edition(booksEntity.getEdition())
                 .publisher(publisher)
@@ -110,6 +113,22 @@ public class BooksService {
 
         BooksEntity bookUpdate = booksRepository.save(book);
         log.info("Books update successfully.");
+        return bookUpdate;
+    }
+
+    @Transactional
+    public BooksEntity updateQuantity(Long id, @Valid BooksUpdateQuantDTO booksUpdateQuantDTO) throws NotFoundException {
+        log.info("The process of update quantity the book begins!");
+
+        BooksEntity bookSearch = booksRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Book id not found in database!");
+                    return new NotFoundException("Book id not found!");
+                });
+
+        bookSearch.setQuantity(booksUpdateQuantDTO.getQuantity());
+        BooksEntity bookUpdate = booksRepository.save(bookSearch);
+        log.info("Books update quantity successfully.");
         return bookUpdate;
     }
 
