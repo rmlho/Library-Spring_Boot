@@ -15,9 +15,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErroResponse> handleNotFoundException(NotFoundException e) {
         ErroResponse erroResponse = ErroResponse.builder()
-        .message(e.getMessage())
+                .message(e.getMessage())
                 .status(HttpStatus.NOT_FOUND.value())
-        .build();
+                .build();
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroResponse);
     }
