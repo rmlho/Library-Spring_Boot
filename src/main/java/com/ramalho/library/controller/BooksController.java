@@ -2,6 +2,8 @@ package com.ramalho.library.controller;
 
 import com.ramalho.library.database.model.BooksEntity;
 import com.ramalho.library.dto.BooksEntityDTO;
+import com.ramalho.library.dto.BooksResponseDTO;
+import com.ramalho.library.dto.BooksUpdateQuantDTO;
 import com.ramalho.library.exception.NotFoundException;
 import com.ramalho.library.service.BooksService;
 import lombok.RequiredArgsConstructor;
@@ -33,10 +35,11 @@ public class BooksController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<BooksEntity> getAll(@RequestParam(defaultValue = "0") Integer page,
-                                    @RequestParam(defaultValue = "10") Integer size) {
+    public Page<BooksResponseDTO> getAll(@RequestParam(defaultValue = "0") Integer page,
+                                         @RequestParam(defaultValue = "10") Integer size) {
         log.info("Request to find all books.");
-        return booksService.findAll(PageRequest.of(page, size));
+        return booksService.findAll(PageRequest.of(page, size))
+                .map(BooksResponseDTO::from);
     }
 
     @PutMapping("/{id}")
@@ -44,6 +47,13 @@ public class BooksController {
     public BooksEntity update(@PathVariable Long id, @RequestBody BooksEntityDTO book) throws NotFoundException {
         log.info("Request to update book.");
         return booksService.update(id, book);
+    }
+
+    @PatchMapping("/{id}/quantity")
+    @ResponseStatus(HttpStatus.OK)
+    public BooksEntity updateQuantity(@PathVariable Long id, @RequestBody BooksUpdateQuantDTO bookQuant) throws NotFoundException {
+        log.info("Request to update quantity book.");
+        return booksService.updateQuantity(id, bookQuant);
     }
 
     @DeleteMapping("/{id}")
