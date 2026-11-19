@@ -28,14 +28,14 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void loginUsers(@RequestBody @Valid UsersRequestDTO usersRequestDTO) {
+    public void registerUsers(@RequestBody @Valid UsersRequestDTO usersRequestDTO) {
         log.info("Request to login users.");
         authService.registerUsers(usersRequestDTO);
     }
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> registerUsers(@RequestBody @Valid UsersRequestDTO usersRequestDTO) {
+    public ResponseEntity<String> loginUsers(@RequestBody @Valid UsersRequestDTO usersRequestDTO) {
         log.info("Request to register users.");
 
         var usernamePassword = new UsernamePasswordAuthenticationToken(usersRequestDTO.getEmail(), usersRequestDTO.getPassword());
