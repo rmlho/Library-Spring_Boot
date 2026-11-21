@@ -22,6 +22,9 @@ public class UsersEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
+    @Column(name = "name_user", nullable = false)
+    private String nameUser;
+
     @Column(nullable = false)
     private String email;
 

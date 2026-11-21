@@ -48,6 +48,7 @@ public class AuthService implements UserDetailsService {
         }
 
         UsersEntity usersEntity = UsersEntity.builder()
+                .nameUser(requestDTO.getNameUser())
                 .email(requestDTO.getEmail())
                 .password(passwordEncoder.encode(requestDTO.getPassword()))
                 .roles(EnumRoles.READER)

@@ -1,10 +1,13 @@
 package com.ramalho.library.database.repository;
 
 import com.ramalho.library.database.model.UsersEntity;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
 public interface IUsersRepository extends JpaRepository<UsersEntity, Long> {
-    Optional<UsersEntity> findByEmail(String email);
+    Optional<UsersEntity> findByEmail(@NotBlank String email);
+
+    Optional<UsersEntity> findByNameUser(@NotBlank String nameUser);
 }

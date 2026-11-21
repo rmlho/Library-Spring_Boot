@@ -15,6 +15,9 @@ import lombok.Setter;
 public class UsersRequestDTO {
 
     @NotBlank
+    private String nameUser;
+
+    @NotBlank
     @Email(message = "Invalid email format.")
     private String email;
 
