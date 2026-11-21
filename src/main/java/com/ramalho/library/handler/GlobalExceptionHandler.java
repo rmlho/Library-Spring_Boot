@@ -1,9 +1,6 @@
 package com.ramalho.library.handler;
 
-import com.ramalho.library.exception.BadRequestException;
-import com.ramalho.library.exception.ConflictException;
-import com.ramalho.library.exception.ErroResponse;
-import com.ramalho.library.exception.NotFoundException;
+import com.ramalho.library.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -50,5 +47,15 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(erroResponse);
+    }
+
+    @ExceptionHandler(UnprocessableEntityException.class)
+    public ResponseEntity<ErroResponse> unprocessableEntity(Exception e) {
+        ErroResponse erroResponse = ErroResponse.builder()
+                .message(e.getMessage())
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(erroResponse);
     }
 }
