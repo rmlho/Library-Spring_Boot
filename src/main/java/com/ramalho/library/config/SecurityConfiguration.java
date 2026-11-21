@@ -48,6 +48,8 @@ public class SecurityConfiguration {
                         .hasAnyRole("LIBRARY", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/v1/books", "/v1/books/**")
                         .hasAnyRole("LIBRARY", "ADMIN", "READER")
+                        .requestMatchers(HttpMethod.PATCH, "/v1/auth/{id}/role/**")
+                        .hasAnyRole("ADMIN")
                         .requestMatchers(
                                 "/v1/author", "/v1/author/**",
                                 "/v1/publisher", "/v1/publisher/**"
