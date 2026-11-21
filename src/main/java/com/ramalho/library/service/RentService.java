@@ -124,4 +124,26 @@ public class RentService {
         return rent;
     }
 
+    public Page<RentEntity> listRentals(Pageable pageable) {
+        log.info("The process of listing everything begins.");
+
+        Page<RentEntity> rentEntityPage = rentRepository.findAll(pageable);
+        log.info("The process of listing everything was completed successfully.");
+        return rentEntityPage;
+    }
+
+    public void deleteRent(Long id) throws NotFoundException {
+        log.info("Start the process of deleting a rental.");
+
+        RentEntity rent = rentRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Rent not found in database");
+                    return new NotFoundException("Rent not found!");
+                });
+
+        rentRepository.delete(rent);
+    }
+
+    
+
 }
