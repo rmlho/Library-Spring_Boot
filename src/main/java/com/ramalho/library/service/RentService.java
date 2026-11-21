@@ -7,16 +7,22 @@ import com.ramalho.library.database.model.UsersEntity;
 import com.ramalho.library.database.repository.IBooksRepository;
 import com.ramalho.library.database.repository.IRentRepository;
 import com.ramalho.library.database.repository.IUsersRepository;
+import com.ramalho.library.dto.BookUserDTO;
+import com.ramalho.library.dto.BooksEntityDTO;
 import com.ramalho.library.dto.RentRequestEntityDTO;
+import com.ramalho.library.dto.RentResponseDTO;
 import com.ramalho.library.exception.NotFoundException;
 import com.ramalho.library.exception.UnprocessableEntityException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -29,7 +35,7 @@ public class RentService {
     private final IBooksRepository booksRepository;
     private final IUsersRepository usersRepository;
 
-    public RentEntity rentRequest(RentRequestEntityDTO rentRequest) throws NotFoundException {
+    public RentEntity rentRequest(RentRequestEntityDTO rentRequest) throws NotFoundException{
         log.info("Starting the rental application process.");
 
         UsersEntity nameUser = usersRepository.findByNameUser(rentRequest.getNameUser())
@@ -55,6 +61,13 @@ public class RentService {
                     return new NotFoundException("Book not found!");
                 });
 
+        if (rentRepository.existsByUsersAndBooksAndStatusRentIn(
+                user,
+                book,
+                List.of(EnumStatusRent.ACTIVE, EnumStatusRent.OVERDUE))) {
+            throw new UnprocessableEntityException("You already have this book rented.");
+        }
+
         RentEntity savedRent = RentEntity.builder()
                 .users(user)
                 .books(book)
@@ -68,6 +81,47 @@ public class RentService {
         return rent;
     }
 
+    @Transactional(noRollbackFor = UnprocessableEntityException.class)
+    public RentResponseDTO bookReturn(String nameUser, BookUserDTO book) throws NotFoundException {
+        log.info("The process of returning the book begins.");
 
+        BooksEntity bookSearch = booksRepository.findByName(book.getName())
+                .orElseThrow(() -> {
+                    log.warn("Book not found in database.");
+                    return new NotFoundException("Book not found!");
+                });
+
+        UsersEntity user = usersRepository.findByNameUser(nameUser)
+                .orElseThrow(() -> {
+                    log.warn("User not found in database.");
+                    return new NotFoundException("User not found!");
+                });
+
+        RentEntity rentEntity = rentRepository.findFirstByUsersAndBooksOrderByOrderDateDesc(user, bookSearch)
+                .orElseThrow(() -> {
+                    log.warn("No user checkouts found for this book.");
+                    return new NotFoundException("User's rental not found");
+                });
+
+        if (rentEntity.getStatusRent() != EnumStatusRent.ACTIVE) {
+            throw new UnprocessableEntityException("The book has already been returned or the rental is overdue.");
+        }
+
+        if (LocalDate.now().isAfter(rentEntity.getReturnedAt())) {
+            rentEntity.setStatusRent(EnumStatusRent.OVERDUE);
+            throw new UnprocessableEntityException("Book is overdue, pay the fine.");
+        }
+
+        rentEntity.setStatusRent(EnumStatusRent.RETURNED);
+        log.info("Book successfully returned.");
+
+        RentResponseDTO rent = RentResponseDTO.builder()
+                .nameUser(nameUser)
+                .nameBook(book.getName())
+                .statusRent(rentEntity.getStatusRent().returnedStatus())
+                .build();
+
+        return rent;
+    }
 
 }
