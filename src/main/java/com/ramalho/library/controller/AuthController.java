@@ -2,6 +2,7 @@ package com.ramalho.library.controller;
 
 import com.ramalho.library.config.TokenProvider;
 import com.ramalho.library.dto.UsersRequestDTO;
+import com.ramalho.library.exception.NotFoundException;
 import com.ramalho.library.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -46,4 +47,25 @@ public class AuthController {
 
         return ResponseEntity.ok(token);
     }
+
+    @PatchMapping("/{id}/role/library")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseEntity<String> libraryRole(@PathVariable Long id) throws NotFoundException {
+        log.info("Request switching user role for library.");
+
+        authService.switchingRoleLibrary(id);
+
+        return ResponseEntity.accepted().body("Role switched.");
+    }
+
+    @PatchMapping("/{id}/role/admin")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseEntity<String> adminRole(@PathVariable Long id) throws NotFoundException {
+        log.info("Request switching user role for admin.");
+
+        authService.switchingRoleAdmin(id);
+
+        return ResponseEntity.accepted().body("Role switched.");
+    }
+
 }
