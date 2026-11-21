@@ -144,6 +144,14 @@ public class RentService {
         rentRepository.delete(rent);
     }
 
+    public Page<RentEntity> listAllOverdue(Pageable pageable) {
+        log.info("The process of listing all overdue rent payments begins.");
+
+        Page<RentEntity> listOverdue = rentRepository.findAllByStatusRent(EnumStatusRent.OVERDUE, pageable);
+        log.info("Process completed successfully.");
+        return listOverdue;
+    }
+
     
 
 }
