@@ -29,6 +29,7 @@ public class RentController {
     public static RentResponseDTO from(RentEntity rent) {
 
         return RentResponseDTO.builder()
+                .id(rent.getId())
                 .nameUser(rent.getUsers().getNameUser())
                 .nameBook(rent.getBooks().getName())
                 .statusRent(rent.getStatusRent().returnedStatus())
