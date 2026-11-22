@@ -31,6 +31,7 @@ public class RentService {
     private final IRentRepository rentRepository;
     private final IBooksRepository booksRepository;
     private final IUsersRepository usersRepository;
+    private final LateFeeService lateFeeService;
 
     @Transactional
     public RentEntity rentRequest(String email, RentRequestEntityDTO rentRequest) throws NotFoundException{
@@ -65,7 +66,7 @@ public class RentService {
                 .users(user)
                 .books(book)
                 .orderDate(LocalDateTime.now())
-                .returnedAt(LocalDate.now().plusDays(7))
+                .dueDate(LocalDate.now().plusDays(7))
                 .statusRent(EnumStatusRent.ACTIVE)
                 .build();
 
@@ -94,8 +95,10 @@ public class RentService {
             throw new UnprocessableEntityException("The book has already been returned or the rental is overdue.");
         }
 
-        if (LocalDate.now().isAfter(rentEntity.getReturnedAt())) {
+        if (LocalDate.now().isAfter(rentEntity.getDueDate())) {
             rentEntity.setStatusRent(EnumStatusRent.OVERDUE);
+            rentEntity.getBooks().setQuantity(rentEntity.getBooks().getQuantity() + 1);
+            lateFeeService.issueFine(rentEntity);
             throw new UnprocessableEntityException("Book is overdue, pay the fine.");
         }
 
@@ -104,6 +107,7 @@ public class RentService {
         log.info("Book successfully returned.");
 
         RentResponseDTO rent = RentResponseDTO.builder()
+                .id(rentEntity.getId())
                 .nameUser(rentEntity.getUsers().getNameUser())
                 .nameBook(rentEntity.getBooks().getName())
                 .statusRent(rentEntity.getStatusRent().returnedStatus())
@@ -166,8 +170,9 @@ public class RentService {
             throw new UnprocessableEntityException("The book has already been returned or the rental is overdue.");
         }
 
-        if (LocalDate.now().isAfter(rent.getReturnedAt())) {
+        if (LocalDate.now().isAfter(rent.getDueDate())) {
             rent.setStatusRent(EnumStatusRent.OVERDUE);
+            lateFeeService.issueFine(rent);
             throw new UnprocessableEntityException("Book is overdue, pay the fine.");
         }
 
@@ -182,7 +187,7 @@ public class RentService {
         }
 
         rent.setBooks(book);
-        rent.setReturnedAt(LocalDate.now().plusDays(7));
+        rent.setDueDate(LocalDate.now().plusDays(7));
         log.info("Rent successfully updated");
 
         return rent;
@@ -201,6 +206,7 @@ public class RentService {
 
         log.info("The user's rentals were listed successfully.");
         return rents.map(rent -> RentResponseDTO.builder()
+                .id(rent.getId())
                 .nameUser(rent.getUsers().getNameUser())
                 .nameBook(rent.getBooks().getName())
                 .statusRent(rent.getStatusRent().returnedStatus())
