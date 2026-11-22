@@ -11,11 +11,5 @@ import lombok.*;
 public class RentRequestEntityDTO {
 
     @NotBlank
-    private String nameUser;
-
-    @NotBlank
-    private String emailUser;
-
-    @NotBlank
     private String nameBook;
 }

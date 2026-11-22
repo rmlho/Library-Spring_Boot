@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -22,7 +21,6 @@ import org.springframework.validation.annotation.Validated;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -35,25 +33,14 @@ public class RentService {
     private final IUsersRepository usersRepository;
 
     @Transactional
-    public RentEntity rentRequest(RentRequestEntityDTO rentRequest) throws NotFoundException{
+    public RentEntity rentRequest(String email, RentRequestEntityDTO rentRequest) throws NotFoundException{
         log.info("Starting the rental application process.");
 
-        UsersEntity nameUser = usersRepository.findByNameUser(rentRequest.getNameUser())
+        UsersEntity user = usersRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    log.warn("Name user not found in database.");
-                    return new NotFoundException("Name user not found!");
+                    log.warn("Authenticated user not found in database.");
+                    return new NotFoundException("User not found!");
                 });
-
-        UsersEntity user = usersRepository.findByEmail(rentRequest.getEmailUser())
-                .orElseThrow(() -> {
-                    log.warn("Email user not found in database.");
-                    return new NotFoundException("Email not found!");
-                });
-
-        if (!Objects.equals(nameUser.getNameUser(), user.getNameUser())) {
-            log.warn("The email and the user's name are not the same object.");
-            throw new UnprocessableEntityException("The email address does not match the username!");
-        }
 
         BooksEntity book = booksRepository.findByName(rentRequest.getNameBook())
                 .orElseThrow(() -> {
@@ -88,25 +75,19 @@ public class RentService {
     }
 
     @Transactional(noRollbackFor = UnprocessableEntityException.class)
-    public RentResponseDTO bookReturn(String nameUser, BookUserDTO book) throws NotFoundException {
+    public RentResponseDTO bookReturn(Long id, String email) throws NotFoundException {
         log.info("The process of returning the book begins.");
 
-        BooksEntity bookSearch = booksRepository.findByName(book.getName())
+        UsersEntity user = usersRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    log.warn("Book not found in database.");
-                    return new NotFoundException("Book not found!");
-                });
-
-        UsersEntity user = usersRepository.findByNameUser(nameUser)
-                .orElseThrow(() -> {
-                    log.warn("User not found in database.");
+                    log.warn("Authenticated user not found in database.");
                     return new NotFoundException("User not found!");
                 });
 
-        RentEntity rentEntity = rentRepository.findFirstByUsersAndBooksOrderByOrderDateDesc(user, bookSearch)
+        RentEntity rentEntity = rentRepository.findByIdAndUsers(id, user)
                 .orElseThrow(() -> {
-                    log.warn("No user checkouts found for this book.");
-                    return new NotFoundException("User's rental not found");
+                    log.warn("Rent {} not found for authenticated user.", id);
+                    return new NotFoundException("Rent not found!");
                 });
 
         if (rentEntity.getStatusRent() != EnumStatusRent.ACTIVE) {
@@ -123,8 +104,8 @@ public class RentService {
         log.info("Book successfully returned.");
 
         RentResponseDTO rent = RentResponseDTO.builder()
-                .nameUser(nameUser)
-                .nameBook(book.getName())
+                .nameUser(rentEntity.getUsers().getNameUser())
+                .nameBook(rentEntity.getBooks().getName())
                 .statusRent(rentEntity.getStatusRent().returnedStatus())
                 .build();
 
@@ -160,31 +141,20 @@ public class RentService {
     }
 
     @Transactional(noRollbackFor = UnprocessableEntityException.class)
-    public RentEntity updateRent(Long id, RentRequestEntityDTO requestEntityDTO) throws NotFoundException {
+    public RentEntity updateRent(Long id, String email, RentRequestEntityDTO requestEntityDTO) throws NotFoundException {
         log.info("The process of updating a rent payment has begun.");
 
-        RentEntity rent = rentRepository.findById(id)
+        UsersEntity user = usersRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    log.warn("Rent not found in database.");
-                    return new NotFoundException("Rent not found!");
-                });
-
-        UsersEntity user = usersRepository.findByNameUser(requestEntityDTO.getNameUser())
-                .orElseThrow(() -> {
-                    log.warn("User not found in database.");
+                    log.warn("Authenticated user not found in database.");
                     return new NotFoundException("User not found!");
                 });
 
-        UsersEntity userByEmail = usersRepository.findByEmail(requestEntityDTO.getEmailUser())
+        RentEntity rent = rentRepository.findByIdAndUsers(id, user)
                 .orElseThrow(() -> {
-                    log.warn("Email user not found in database.");
-                    return new NotFoundException("Email not found!");
+                    log.warn("Rent {} not found for authenticated user.", id);
+                    return new NotFoundException("Rent not found!");
                 });
-
-        if (!Objects.equals(user.getNameUser(), userByEmail.getNameUser())) {
-            log.warn("The email and the user's name do not match.");
-            throw new UnprocessableEntityException("The email address does not match the username!");
-        }
 
         BooksEntity book = booksRepository.findByName(requestEntityDTO.getNameBook())
                 .orElseThrow(() -> {
@@ -211,7 +181,6 @@ public class RentService {
             book.setQuantity(book.getQuantity() - 1);
         }
 
-        rent.setUsers(user);
         rent.setBooks(book);
         rent.setReturnedAt(LocalDate.now().plusDays(7));
         log.info("Rent successfully updated");
@@ -219,10 +188,10 @@ public class RentService {
         return rent;
     }
 
-    public Page<RentResponseDTO> findAllRentByUser(UsersRequestDTO requestDTO, Pageable pageable) throws NotFoundException {
+    public Page<RentResponseDTO> findAllRentByUser(String email, Pageable pageable) throws NotFoundException {
         log.info("The process of listing the user's rentals has begun");
 
-        UsersEntity user = usersRepository.findByEmail(requestDTO.getEmail())
+        UsersEntity user = usersRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     log.warn("User not found in database.");
                     return new NotFoundException("User not found!");
