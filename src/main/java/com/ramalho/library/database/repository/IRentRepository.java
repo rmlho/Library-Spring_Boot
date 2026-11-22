@@ -22,10 +22,7 @@ public interface IRentRepository extends JpaRepository<RentEntity, Long> {
             Collection<EnumStatusRent> statuses
     );
 
-    Optional<RentEntity> findFirstByUsersAndBooksOrderByOrderDateDesc(
-            UsersEntity users,
-            BooksEntity books
-    );
+    Optional<RentEntity> findByIdAndUsers(Long id, UsersEntity users);
 
     Page<RentEntity> findAllByStatusRent(EnumStatusRent statusRent, Pageable pageable);
 
