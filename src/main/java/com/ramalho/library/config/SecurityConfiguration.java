@@ -44,6 +44,15 @@ public class SecurityConfiguration {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/v1/rent",
+                                "/v1/rent/*/return"
+                        ).hasAnyRole("READER", "LIBRARY", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/v1/rent/rentsUser")
+                        .hasAnyRole("READER", "LIBRARY", "ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/v1/rent/{id}")
+                        .hasAnyRole("READER", "LIBRARY", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/v1/books")
                         .hasAnyRole("LIBRARY", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/v1/books", "/v1/books/**")
