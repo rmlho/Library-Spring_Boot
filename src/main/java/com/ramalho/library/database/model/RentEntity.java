@@ -34,7 +34,7 @@ public class RentEntity {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "returned_rent")
-    private LocalDate returnedAt;
+    private LocalDate dueDate;
 
     @Enumerated(EnumType.STRING)
     private EnumStatusRent statusRent;
