@@ -1,9 +1,5 @@
 package com.ramalho.library.dto;
 
-import com.ramalho.library.database.model.EnumStatusRent;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
@@ -12,6 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class RentResponseDTO {
+
+    private Long id;
 
     private String nameUser;
 
