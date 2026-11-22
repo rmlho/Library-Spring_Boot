@@ -1,182 +1,74 @@
 # Library API
 
-A RESTful library management API built with Java and Spring Boot. The system manages books, authors, and publishers with relational data integrity, centralized exception handling, and auto-generated API documentation.
+A REST API for managing a library's catalog and operations. It provides resources for managing books, authors, and publishers, as well as recording loans and tracking fines, with JWT-based authentication.
 
 ## Features
 
-- Full CRUD operations for Books, Authors, and Publishers
-- Relational data modeling with JPA (`@ManyToOne` relationships between Book, Author, and Publisher)
-- Request/response separation using DTOs, keeping entities isolated from the API contract
-- Centralized exception handling via `@RestControllerAdvice`
-- Input validation with Bean Validation (`@Valid`, `@NotNull`, `@NotBlank`, etc.)
-- Pagination and sorting support on listing endpoints
-- Custom query methods (search by name, order by registration date, etc.)
-- Auto-generated, interactive API documentation with Swagger/OpenAPI
-- Manually tested with Postman across all endpoints
+- Manage books, authors, and publishers
+- Record and retrieve loans, returns, and fines
+- Authentication and authorization with Spring Security and JWT
+- Request validation and standardized error responses
+- Pagination and sorting for supported queries
+- Interactive API documentation with OpenAPI and Swagger UI
 
-## Technologies Used
+## Technology Stack
 
-- Java 25
-- Spring Boot
-- Spring Data JPA / Hibernate
-- PostgreSQL
-- Bean Validation (Jakarta Validation)
-- Lombok
-- Springdoc OpenAPI (Swagger UI)
-- Maven
-- Postman (manual testing)
-- Spring Security
-- JSON Web Tokens (JWT)
+Java 25 · Spring Boot · Spring Data JPA · PostgreSQL 17 · Spring Security · JWT · Docker Compose
 
-## Project Structure
+## Run with Docker
 
-```
-library/
-├── controller/       REST endpoints, request/response handling
-├── service/          Business logic and orchestration
-├── database/
-│   ├── model/         JPA entities
-│   └── repository/    Spring Data JPA repositories
-├── dto/              Request and response DTOs
-├── exception/        Custom exceptions and error response models
-├── handler/          Global exception handler
-└── LibraryApplication.java
-```
+Requirements: Git and Docker with Docker Compose.
 
-## Architecture
+Clone the repository and create a local configuration file:
 
-The project follows a layered architecture, separating responsibilities across distinct packages:
-
-- **Controller** — receives HTTP requests, delegates to the service layer, and returns the appropriate HTTP response. Contains no business logic.
-- **Service** — holds all business rules, orchestrates calls to repositories, and enforces validation beyond what annotations alone can express.
-- **Repository** — interfaces extending `JpaRepository`, responsible for data access. Most queries are handled through Spring Data JPA query methods, without manual SQL.
-- **Entity** — represents the database tables and their relationships.
-- **DTO** — defines what enters and leaves the API, decoupled from the internal entity structure.
-
-<p align="center">
-  <img src="./assets/Postman.png" width="600" alt="Test API Postman">
-</p>
-
-
-## DTOs
-
-Entities are never exposed directly through the API. Each operation uses a DTO tailored to its purpose:
-
-- Request DTOs expose only the fields a client should be able to send. Relationships are represented by their identifiers (e.g. `authorId`, `publisherId`) rather than nested objects, avoiding ambiguity about which data is authoritative.
-- Response payloads return the full entity graph (including related Author and Publisher data), since consumers of the API generally benefit from having that context without an additional request.
-
-This separation keeps the internal data model free to evolve independently of the public API contract.
-
-## Validation
-
-Input validation is handled with Jakarta Bean Validation annotations directly on the DTOs (`@NotBlank`, `@NotNull`, among others), combined with `@Valid` on controller method parameters. Invalid requests are rejected before reaching the service layer, and the global exception handler returns a structured, descriptive error response.
-
-## Exception Handling
-
-A custom exception (`NotFoundException` and `BadRequestException`) is thrown whenever a requested resource does not exist. Exceptions are **not** caught locally inside each controller method; instead, a single `@RestControllerAdvice` class intercepts them application-wide and converts them into consistent, structured HTTP error responses — avoiding repeated try/catch blocks across endpoints.
-
-## Pagination
-
-Listing endpoints support pagination and sorting through Spring Data's `Pageable`, allowing clients to request a specific page, page size, and sort order via query parameters:
-
-```
-GET /v1/books?page=0&size=10&sort=registrationDate,desc
-```
-
-Responses include pagination metadata (total elements, total pages, current page) alongside the requested content.
-
-## API Documentation
-
-Full API documentation is generated automatically with Springdoc OpenAPI and available through Swagger UI once the application is running:
-
-```
-http://localhost:8081/swagger-ui.html
-```
-
-<p align="center">
-  <img src="./assets/SwaggerUI.png" width="600" alt="Test API Postman">
-</p>
-
-## Security & Authentication
-
-The API is secured using **Spring Security** and **JSON Web Tokens (JWT)**, implementing a stateless authentication mechanism to protect the endpoints.
-
-- **Password Hashing**: User passwords are securely encrypted using **BCrypt** before being stored in the PostgreSQL database.
-- **Registration & Login**: Public endpoints (`/v1/auth/register` and `/v1/auth/login`) allow users to create an account and authenticate. By default, new users are assigned a standard role (e.g., `USER`) to prevent privilege escalation.
-- **Authorization**: Upon successful authentication, the API returns a JWT. This token must be included in the HTTP headers as a `Bearer` token for all subsequent requests to protected routes.
-- **Stateless Sessions**: The server does not store user sessions. Every request to a protected endpoint is independently validated via a custom `JwtAuthenticationFilter`.
-
-**Example: Accessing a protected route**
-```http
-GET /v1/books
-Authorization: Bearer <your_jwt_token_here>
-```
-
-## Getting Started
-
-### Prerequisites
-
-- Java Development Kit (JDK) 25 or higher
-- Apache Maven
-- PostgreSQL
-
-### Installation
-
-1. Clone the repository:
 ```bash
 git clone https://github.com/rmlho/Library-Spring_Boot.git
 cd Library-Spring_Boot
+cp .env.example .env
 ```
 
-2. Create a PostgreSQL database for the project.
-
-3. Configure the database connection in `src/main/resources/application.yaml` using environment variable:
-```yaml
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/your_database
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-  jpa:
-    hibernate:
-    ddl-auto: update
-```
-
-4. Build and run the application:
-```bash
-mvn clean install
-mvn spring-boot:run
-```
-
-5. The API will be available at `http://localhost:8081`, and the interactive documentation at `http://localhost:8081/swagger-ui.html`.
-
-## Docker
-
-The project includes a `Dockerfile` and a Docker Compose configuration that starts the API and PostgreSQL. Before starting the containers, create a `.env` file in the project root:
+Edit `.env` and set your database credentials and a strong JWT key. To generate a random key, run `openssl rand -hex 32` and copy the output to `JWT_KEY`. For example:
 
 ```env
-DB_USERNAME=library_user
-DB_PASSWORD=change_this_password
-JWT_KEY=replace_with_a_long_random_secret
-JWT_EXPIRATION=Time_in_milliseconds
+DB_USERNAME=library
+DB_PASSWORD=set-a-strong-password
+JWT_KEY=replace-with-a-strong-random-secret
+JWT_EXPIRATION=86400000
 ```
 
-Start the application and database:
+`JWT_EXPIRATION` is specified in milliseconds; the example value corresponds to 24 hours. Do not share or commit the `.env` file.
+
+Start the API and PostgreSQL:
 
 ```bash
 docker compose up --build -d
 ```
 
-The API is available at `http://localhost:8081`; Swagger UI is at `http://localhost:8081/swagger-ui.html`. PostgreSQL is exposed on host port `5433` (the API connects to it internally on port `5432`). To view the container logs or stop the services:
+Compose builds the API image locally and starts the services once the database is ready. Java, Maven, and PostgreSQL do not need to be installed on the host. The API is available at `http://localhost:8081`, and the interactive documentation at `http://localhost:8081/swagger-ui/index.html`.
+
+To follow application logs and stop the services:
 
 ```bash
 docker compose logs -f app
 docker compose down
 ```
 
-## Using the API
+PostgreSQL data is retained in the `postgres_data` volume when the containers are stopped. To remove the data as well, run `docker compose down -v`.
 
-The API uses JWT authentication. Register an account, then log in to receive a token (replace the example email and password with your own; passwords must be at least 8 characters):
+## API
+
+The main resources are available at:
+
+| Resource | Base endpoint |
+| --- | --- |
+| Authentication | `/v1/auth` |
+| Books | `/v1/books` |
+| Authors | `/v1/author` |
+| Publishers | `/v1/publisher` |
+| Loans | `/v1/rent` |
+| Fines | `/v1/fine` |
+
+Register an account and log in to obtain a token:
 
 ```bash
 curl -X POST http://localhost:8081/v1/auth/register \
@@ -188,58 +80,22 @@ curl -X POST http://localhost:8081/v1/auth/login \
   -d '{"email":"reader@example.com","password":"password123"}'
 ```
 
-Use the token returned by the login request as a Bearer token for protected endpoints. For example, list books or create one, or use the Postman for requests HTTP:
+Send the returned token in the `Authorization: Bearer <token>` header to access protected routes. The Swagger documentation lists the endpoints, parameters, and request formats.
 
-```bash
-curl http://localhost:8081/v1/books \
-  -H "Authorization: Bearer <your_jwt_token>"
+<p align="center">
+  <img src="./assets/SwaggerUI.png" alt="Interactive Swagger UI documentation for the API" width="900">
+</p>
 
-curl -X POST http://localhost:8081/v1/books \
-  -H "Authorization: Bearer <your_jwt_token>" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "The Shining",
-    "gender": "Horror",
-    "authorId": 9,
-    "edition": "Anchor Books Tie-In Edition",
-    "publisherId": 4
-  }'
-```
+Example request and response in Postman:
 
-The books endpoint also supports pagination, for example `GET /v1/books?page=0&size=10`. See Swagger UI for the complete endpoints and request formats for books, authors, and publishers.
+<p align="center">
+  <img src="./assets/Postman.png" alt="Creating a book and viewing the API response in Postman" width="900">
+</p>
 
-## Usage Example
+## Architecture
 
-
-Creating a book:
-
-```
-POST /v1/books
-Content-Type: application/json
-
-{
-    "name": "The Shining",
-    "gender": "Horror",
-    "authorId": 9,
-    "edition": "Anchor Books Tie-In Edition",
-    "publisherId": 4
-}
-```
-
-## Roadmap
-
-- [x] CRUD for Books, Authors, and Publishers
-- [x] DTO-based request/response separation
-- [x] Centralized exception handling
-- [x] Input validation
-- [x] Pagination and sorting
-- [x] Swagger/OpenAPI documentation
-- [x] Authentication and authorization with Spring Security (JWT)
-- [x] Containerization with Docker
-- [ ] Cloud deployment
+The application follows a layered architecture, separating HTTP controllers, business services, persistence repositories, and JPA entities. DTOs define input and output data, while a global handler standardizes error responses.
 
 ## Author
 
-Joao Gabriel Ramalho
-
-- GitHub: [@rmlho](https://github.com/rmlho)
+Joao Gabriel Ramalho · [@rmlho](https://github.com/rmlho)
